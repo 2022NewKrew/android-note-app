@@ -39,7 +39,7 @@ class AddEditNoteViewModel(
             }
             is AddEditNoteEvent.SaveNote -> {
                 when {
-                    event.title.isBlank() -> {
+                    event.title.isBlank()  -> {
                         _event.value = UiEvent.ShowSnackbar("타이틀을 입력해 주세요")
                     }
                     event.content.isBlank() -> {
