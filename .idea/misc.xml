@@ -3,6 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/circle.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle1_selected.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle1_selector.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle2.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle2_selected.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle2_selector.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle3.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle3_selected.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle3_selector.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle4.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle4_selected.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle4_selector.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle5.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle5_selected.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle5_selector.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle_selected.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/circle_selector.xml" value="0.5676923076923077" />
+        <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.5676923076923077" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5604166666666667" />
         <entry key="app/src/main/res/layout/fragment_add_edit_note.xml" value="0.5630208333333333" />
         <entry key="app/src/main/res/layout/fragment_notes.xml" value="0.45" />

@@ -12,7 +12,7 @@ class AddEditNoteViewModel(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _noteColor = MutableLiveData<Int>(Color.RED)
+    private val _noteColor = MutableLiveData<Int>()
     val noteColor: LiveData<Int> = _noteColor
 
     private val _event = SingleLiveEvent<UiEvent>()
@@ -40,10 +40,10 @@ class AddEditNoteViewModel(
             is AddEditNoteEvent.SaveNote -> {
                 when {
                     event.title.isBlank()  -> {
-                        _event.value = UiEvent.ShowSnackbar("타이틀을 입력해 주세요")
+                        _event.value = UiEvent.ShowSnackBar("타이틀을 입력해 주세요")
                     }
                     event.content.isBlank() -> {
-                        _event.value = UiEvent.ShowSnackbar("내용을 입력해 주세요")
+                        _event.value = UiEvent.ShowSnackBar("내용을 입력해 주세요")
                     }
                     else -> saveNote(event)
                 }
@@ -65,7 +65,7 @@ class AddEditNoteViewModel(
     }
 
     sealed class UiEvent {
-        data class ShowSnackbar(val message: String) : UiEvent()
+        data class ShowSnackBar(val message: String) : UiEvent()
         object SaveNote : UiEvent()
     }
 }

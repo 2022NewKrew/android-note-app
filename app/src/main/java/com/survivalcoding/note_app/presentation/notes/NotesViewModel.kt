@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.survivalcoding.note_app.domain.model.Note
 import com.survivalcoding.note_app.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -46,6 +47,9 @@ class NotesViewModel(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun getNotes() {
         repository.getNotes()
+            .map { notes ->
+                notes.sortedByDescending { it.timestamp }
+            }
             .onEach { notes ->
                 _state.value = state.value!!.copy(
                     notes = notes,

@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="roseBud">#FFFFAB91</color>
+    <color name="primrose">#FFE7ED9B</color>
+    <color name="wisteria">#FFCF94DA</color>
+    <color name="skyBlue">#FF81DEEA</color>
+    <color name="illusion">#FFF48FB1</color>
 </resources>

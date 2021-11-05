@@ -1,7 +1,6 @@
 package com.survivalcoding.note_app.presentation.notes.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,7 +19,7 @@ class NoteListAdapter : ListAdapter<Note, NoteListAdapter.NoteViewHolder>(DiffCa
         holder.binding.apply {
             titleTextView.text = currentNote.title
             contentTextView.text = currentNote.content
-//            root.setBackgroundColor(currentNote.color)
+            root.setBackgroundColor(currentNote.color)
         }
     }
 
