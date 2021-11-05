@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.survivalcoding.core.App
+import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.databinding.FragmentNotesBinding
 import com.survivalcoding.note_app.presentation.add_edit_note.AddEditNoteFragment

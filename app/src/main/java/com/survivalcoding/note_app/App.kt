@@ -1,7 +1,6 @@
-package com.survivalcoding.core
+package com.survivalcoding.note_app
 
 import android.app.Application
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.room.Room
 import com.survivalcoding.note_app.data.data_source.NoteDatabase
 import com.survivalcoding.note_app.data.repository.NoteRepositoryImpl

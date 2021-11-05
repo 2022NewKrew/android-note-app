@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import com.google.android.material.snackbar.Snackbar
-import com.survivalcoding.core.App
+import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.databinding.FragmentAddEditNoteBinding
 

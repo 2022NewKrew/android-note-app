@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.survivalcoding.core.util;
+package com.survivalcoding.note_app.core.util;
 
 import android.util.Log;
 

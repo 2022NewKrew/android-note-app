@@ -2,7 +2,7 @@ package com.survivalcoding.note_app.presentation.add_edit_note
 
 import android.graphics.Color
 import androidx.lifecycle.*
-import com.survivalcoding.core.util.SingleLiveEvent
+import com.survivalcoding.note_app.core.util.SingleLiveEvent
 import com.survivalcoding.note_app.domain.model.Note
 import com.survivalcoding.note_app.domain.repository.NoteRepository
 import kotlinx.coroutines.launch
