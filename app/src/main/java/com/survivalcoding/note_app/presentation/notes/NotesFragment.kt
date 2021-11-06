@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.databinding.FragmentNotesBinding
@@ -50,7 +51,15 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val notesAdapter = NoteListAdapter()
+        val notesAdapter = NoteListAdapter { note ->
+            viewModel.onEvent(NotesEvent.DeleteNote(note))
+
+            Snackbar.make(binding.root, "노트가 삭제되었습니다", Snackbar.LENGTH_LONG)
+                .setAction("취소") {
+                    viewModel.onEvent(NotesEvent.RestoreNote)
+                }
+                .show()
+        }
 
         binding.notesList.apply {
             layoutManager = LinearLayoutManager(requireContext())

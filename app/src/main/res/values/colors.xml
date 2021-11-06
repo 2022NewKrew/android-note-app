@@ -13,4 +13,8 @@
     <color name="wisteria">#FFCF94DA</color>
     <color name="skyBlue">#FF81DEEA</color>
     <color name="illusion">#FFF48FB1</color>
+
+    <color name="darkGrey">#FF202020</color>
+    <color name="lightBlue">#FFD7E8DE</color>
+
 </resources>

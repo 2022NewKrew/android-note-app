@@ -21,6 +21,7 @@ class NotesViewModel(
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
                     repository.deleteNote(event.note)
+                    recentlyDeletedNote = event.note
                 }
             }
 //            is NotesEvent.Order -> {
