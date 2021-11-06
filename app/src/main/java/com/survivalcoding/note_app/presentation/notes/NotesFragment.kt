@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -51,15 +52,27 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val notesAdapter = NoteListAdapter { note ->
-            viewModel.onEvent(NotesEvent.DeleteNote(note))
+        val notesAdapter = NoteListAdapter(
+            onDelete = { note ->
+                viewModel.onEvent(NotesEvent.DeleteNote(note))
 
-            Snackbar.make(binding.root, "노트가 삭제되었습니다", Snackbar.LENGTH_LONG)
-                .setAction("취소") {
-                    viewModel.onEvent(NotesEvent.RestoreNote)
+                Snackbar.make(binding.root, "노트가 삭제되었습니다", Snackbar.LENGTH_LONG)
+                    .setAction("취소") {
+                        viewModel.onEvent(NotesEvent.RestoreNote)
+                    }
+                    .show()
+            },
+            onSelect = { note ->
+                parentFragmentManager.commit {
+                    replace<AddEditNoteFragment>(
+                        R.id.fragment_container,
+                        args = bundleOf("noteId" to note.id),
+                    )
+                    setReorderingAllowed(true)
+                    addToBackStack("addEditNote")
                 }
-                .show()
-        }
+            }
+        )
 
         binding.notesList.apply {
             layoutManager = LinearLayoutManager(requireContext())

@@ -2,7 +2,6 @@ package com.survivalcoding.note_app.presentation.add_edit_note
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,7 +33,7 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
     ): View {
         viewModel = ViewModelProvider(
             this,
-            MyViewModelFactory(this, savedInstanceState)
+            MyViewModelFactory(this, arguments ?: savedInstanceState)
         )[AddEditNoteViewModel::class.java]
 
         _binding = FragmentAddEditNoteBinding.inflate(inflater, container, false)
@@ -76,6 +75,16 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
 
                 viewModel.onEvent(AddEditNoteEvent.ChangeColor(circle.second))
             }
+        }
+
+        viewModel.noteColor.observe(viewLifecycleOwner) { noteColor ->
+            binding.background.setBackgroundColor(noteColor)
+        }
+        viewModel.noteTitle.observe(viewLifecycleOwner) { title ->
+            binding.titleEditText.setText(title)
+        }
+        viewModel.noteContent.observe(viewLifecycleOwner) { content ->
+            binding.contentEditText.setText(content)
         }
 
         viewModel.event.observe(viewLifecycleOwner) { event ->

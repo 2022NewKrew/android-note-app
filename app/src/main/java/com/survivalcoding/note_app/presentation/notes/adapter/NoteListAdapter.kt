@@ -9,10 +9,11 @@ import com.survivalcoding.note_app.databinding.ItemNoteBinding
 import com.survivalcoding.note_app.domain.model.Note
 
 class NoteListAdapter(
-    val onDelete: (note: Note) -> Unit
+    val onSelect: (note: Note) -> Unit,
+    val onDelete: (note: Note) -> Unit,
 ) : ListAdapter<Note, NoteListAdapter.NoteViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val binding = ItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false);
+        val binding = ItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return NoteViewHolder(binding)
     }
 
@@ -24,6 +25,9 @@ class NoteListAdapter(
             root.setBackgroundColor(currentNote.color)
             deleteImageView.setOnClickListener {
                 onDelete(currentNote)
+            }
+            root.setOnClickListener {
+                onSelect(currentNote)
             }
         }
     }
