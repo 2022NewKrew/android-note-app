@@ -19,6 +19,8 @@ class NotesViewModel(
 
     private var recentlyDeletedNote: Note? = null
 
+    var noteOrder: NoteOrder = NoteOrder.Date(OrderType.Descending)
+
     fun onEvent(event: NotesEvent) {
         when (event) {
             is NotesEvent.DeleteNote -> {
@@ -28,14 +30,7 @@ class NotesViewModel(
                 }
             }
             is NotesEvent.Order -> {
-                if (state.value!!.noteOrder::class == event.noteOrder::class &&
-                    state.value!!.noteOrder.orderType == event.noteOrder.orderType
-                ) {
-                    return
-                }
-                _state.value = state.value!!.copy(
-                    noteOrder = event.noteOrder
-                )
+                noteOrder = event.noteOrder
                 getNotes()
             }
             NotesEvent.RestoreNote -> {
@@ -53,8 +48,6 @@ class NotesViewModel(
     }
 
     private fun getNotes() {
-        val noteOrder = _state.value!!.noteOrder
-
         repository.getNotes()
             .map { notes ->
                 when (noteOrder.orderType) {

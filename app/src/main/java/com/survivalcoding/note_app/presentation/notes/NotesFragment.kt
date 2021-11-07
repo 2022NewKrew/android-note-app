@@ -16,6 +16,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.databinding.FragmentNotesBinding
+import com.survivalcoding.note_app.domain.util.NoteOrder
+import com.survivalcoding.note_app.domain.util.OrderType
 import com.survivalcoding.note_app.presentation.add_edit_note.AddEditNoteFragment
 import com.survivalcoding.note_app.presentation.notes.adapter.NoteListAdapter
 
@@ -85,6 +87,22 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
                 setReorderingAllowed(true)
                 addToBackStack("addEditNote")
             }
+        }
+
+        binding.titleRadioButton.setOnClickListener {
+            viewModel.onEvent(NotesEvent.Order(NoteOrder.Title(viewModel.noteOrder.orderType)))
+        }
+        binding.dateRadioButton.setOnClickListener {
+            viewModel.onEvent(NotesEvent.Order(NoteOrder.Date(viewModel.noteOrder.orderType)))
+        }
+        binding.colorRadioButton.setOnClickListener {
+            viewModel.onEvent(NotesEvent.Order(NoteOrder.Color(viewModel.noteOrder.orderType)))
+        }
+        binding.ascRadioButton.setOnClickListener {
+            viewModel.onEvent(NotesEvent.Order(viewModel.noteOrder.copy(OrderType.Ascending)))
+        }
+        binding.descRadioButton.setOnClickListener {
+            viewModel.onEvent(NotesEvent.Order(viewModel.noteOrder.copy(OrderType.Descending)))
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
