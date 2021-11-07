@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class NotesViewModel(
     private val repository: NoteRepository,
-) : ViewModel(), LifecycleObserver {
+) : ViewModel(), LifecycleEventObserver {
 
     private val _state = MutableLiveData(NotesState())
     val state: LiveData<NotesState> = _state
@@ -52,7 +52,6 @@ class NotesViewModel(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun getNotes() {
         val noteOrder = _state.value!!.noteOrder
 
@@ -81,5 +80,11 @@ class NotesViewModel(
                 )
             }
             .launchIn(viewModelScope)
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_START) {
+            getNotes()
+        }
     }
 }
