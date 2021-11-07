@@ -62,6 +62,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
                     .setAction("취소") {
                         viewModel.onEvent(NotesEvent.RestoreNote)
                     }
+                    .setAnchorView(binding.addButton)
                     .show()
             },
             onSelect = { note ->

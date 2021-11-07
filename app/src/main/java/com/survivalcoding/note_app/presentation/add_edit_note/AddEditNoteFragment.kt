@@ -93,7 +93,9 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
                     parentFragmentManager.popBackStack()
                 }
                 is AddEditNoteViewModel.UiEvent.ShowSnackBar -> {
-                    Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
+                        .setAnchorView(binding.saveButton)
+                        .show()
                 }
             }
         }
