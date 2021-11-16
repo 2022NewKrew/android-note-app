@@ -1,6 +1,5 @@
 package com.survivalcoding.note_app.data.repository
 
-import androidx.lifecycle.LiveData
 import com.survivalcoding.note_app.data.data_source.NoteDao
 import com.survivalcoding.note_app.domain.model.Note
 import com.survivalcoding.note_app.domain.repository.NoteRepository

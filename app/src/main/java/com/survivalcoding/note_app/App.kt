@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.survivalcoding.note_app.data.data_source.NoteDatabase
 import com.survivalcoding.note_app.data.repository.NoteRepositoryImpl
 import com.survivalcoding.note_app.domain.repository.NoteRepository
+import com.survivalcoding.note_app.domain.use_case.GetNotesUseCase
 
 class App : Application() {
     private val db by lazy {
@@ -16,5 +17,9 @@ class App : Application() {
 
     val repository: NoteRepository by lazy {
         NoteRepositoryImpl(db.noteDao)
+    }
+
+    val getNotesUseCase: GetNotesUseCase by lazy {
+        GetNotesUseCase(repository)
     }
 }

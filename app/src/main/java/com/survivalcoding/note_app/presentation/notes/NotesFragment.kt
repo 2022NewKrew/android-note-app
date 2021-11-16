@@ -32,8 +32,12 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
                         val repository = (requireActivity().application as App).repository
+                        val getNotesUseCase = (requireActivity().application as App).getNotesUseCase
 
-                        return NotesViewModel(repository) as T
+                        return NotesViewModel(
+                            repository = repository,
+                            getNotesUseCase = getNotesUseCase,
+                        ) as T
                     }
                     throw IllegalArgumentException("Unknown ViewModel Class")
                 }
