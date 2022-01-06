@@ -1,9 +1,11 @@
 package com.survivalcoding.note_app.presentation.add_edit_note
 
+import android.graphics.Color
 import androidx.lifecycle.*
-import com.survivalcoding.note_app.core.util.SingleLiveEvent
 import com.survivalcoding.note_app.domain.model.Note
 import com.survivalcoding.note_app.domain.repository.NoteRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
@@ -20,8 +22,8 @@ class AddEditNoteViewModel(
     private val _noteContent = MutableLiveData<String>()
     val noteContent: LiveData<String> = _noteContent
 
-    private val _event = SingleLiveEvent<UiEvent>()
-    val event: LiveData<UiEvent> = _event
+    private val _event = MutableSharedFlow<UiEvent>()
+    val event: SharedFlow<UiEvent> = _event
 
     private var currentNoteId: Int? = null
 
@@ -46,10 +48,14 @@ class AddEditNoteViewModel(
             is AddEditNoteEvent.SaveNote -> {
                 when {
                     event.title.isBlank() -> {
-                        _event.value = UiEvent.ShowSnackBar("타이틀을 입력해 주세요")
+                        viewModelScope.launch {
+                            _event.emit(UiEvent.ShowSnackBar("타이틀을 입력해 주세요"))
+                        }
                     }
                     event.content.isBlank() -> {
-                        _event.value = UiEvent.ShowSnackBar("내용을 입력해 주세요")
+                        viewModelScope.launch {
+                            _event.emit(UiEvent.ShowSnackBar("내용을 입력해 주세요"))
+                        }
                     }
                     else -> saveNote(event)
                 }
@@ -63,11 +69,12 @@ class AddEditNoteViewModel(
                 title = event.title,
                 content = event.content,
                 timestamp = System.currentTimeMillis(),
-                color = noteColor.value!!,
+                color = noteColor.value ?: Color.RED,
                 id = currentNoteId,
             )
         )
-        _event.value = UiEvent.SaveNote
+
+        _event.emit(UiEvent.SaveNote)
     }
 
     sealed class UiEvent {

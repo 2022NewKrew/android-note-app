@@ -9,15 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.databinding.FragmentAddEditNoteBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
     private var _binding: FragmentAddEditNoteBinding? = null
@@ -33,7 +32,7 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
     ): View {
         viewModel = ViewModelProvider(
             this,
-            MyViewModelFactory(this, arguments ?: savedInstanceState)
+            AddEditNoteViewModelFactory(this, arguments ?: savedInstanceState)
         )[AddEditNoteViewModel::class.java]
 
         _binding = FragmentAddEditNoteBinding.inflate(inflater, container, false)
@@ -77,25 +76,25 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
             }
         }
 
-        viewModel.noteColor.observe(viewLifecycleOwner) { noteColor ->
+        viewModel.noteColor.observe(viewLifecycleOwner, Observer { noteColor ->
             binding.background.setBackgroundColor(noteColor)
-        }
-        viewModel.noteTitle.observe(viewLifecycleOwner) { title ->
+        })
+        viewModel.noteTitle.observe(viewLifecycleOwner, Observer { title ->
             binding.titleEditText.setText(title)
-        }
-        viewModel.noteContent.observe(viewLifecycleOwner) { content ->
+        })
+        viewModel.noteContent.observe(viewLifecycleOwner, Observer { content ->
             binding.contentEditText.setText(content)
-        }
+        })
 
-        viewModel.event.observe(viewLifecycleOwner) { event ->
-            when (event) {
-                AddEditNoteViewModel.UiEvent.SaveNote -> {
-                    parentFragmentManager.popBackStack()
-                }
-                is AddEditNoteViewModel.UiEvent.ShowSnackBar -> {
-                    Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
-                        .setAnchorView(binding.saveButton)
-                        .show()
+        lifecycleScope.launch {
+            viewModel.event.collectLatest { event ->
+                when (event) {
+                    is AddEditNoteViewModel.UiEvent.SaveNote -> parentFragmentManager.popBackStack()
+                    is AddEditNoteViewModel.UiEvent.ShowSnackBar -> {
+                        Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
+                            .setAnchorView(binding.saveButton)
+                            .show()
+                    }
                 }
             }
         }
@@ -106,7 +105,7 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
         _binding = null
     }
 
-    inner class MyViewModelFactory(owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null) :
+    inner class AddEditNoteViewModelFactory(owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null) :
         AbstractSavedStateViewModelFactory(
             owner, defaultArgs
         ) {
