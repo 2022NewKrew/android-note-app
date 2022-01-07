@@ -1,10 +1,9 @@
 package com.survivalcoding.note_app.presentation.notes
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -110,8 +109,15 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
             viewModel.onEvent(NotesEvent.Order(viewModel.noteOrder.copy(OrderType.Descending)))
         }
 
+        binding.menu.setOnClickListener {
+            viewModel.onEvent(NotesEvent.ToggleOrderSection)
+        }
+
         viewModel.state.observe(viewLifecycleOwner) { state ->
             notesAdapter.submitList(state.notes)
+
+            binding.radioGroup.isVisible = state.isOrderSectionVisible
+            binding.radioGroup2.isVisible = state.isOrderSectionVisible
         }
     }
 

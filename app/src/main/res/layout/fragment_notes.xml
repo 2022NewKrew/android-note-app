@@ -4,7 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".presentation.notes.NotesFragment">
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Note App"
+        app:titleTextColor="@color/white">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:text="Note App"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="Menu Visible"
+            android:src="@drawable/ic_baseline_menu_24"
+            app:tint="@color/white" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notes_list"
@@ -22,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/white"
         android:clickable="true"
         android:src="@drawable/ic_baseline_add_24"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,25 +73,28 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <RadioButton
             android:id="@+id/titleRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title" />
+            android:text="Title"
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/dateRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date" />
+            android:text="Date"
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/colorRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Color" />
+            android:text="Color"
+            android:textColor="@color/white" />
     </RadioGroup>
 
     <RadioGroup
@@ -75,13 +113,15 @@
             android:id="@+id/ascRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ascending" />
+            android:text="Ascending"
+            android:textColor="@color/white" />
 
         <RadioButton
             android:id="@+id/descRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Descending" />
+            android:text="Descending"
+            android:textColor="@color/white" />
     </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

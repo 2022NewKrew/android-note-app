@@ -40,11 +40,11 @@ class NotesViewModel(
                     recentlyDeletedNote = null
                 }
             }
-//            NotesEvent.ToggleOrderSection -> {
-//                _state.value = state.value.copy(
-//                    isOrderSectionVisible = !state.value.isOrderSectionVisible
-//                )
-//            }
+            NotesEvent.ToggleOrderSection -> {
+                _state.value = state.value!!.copy(
+                    isOrderSectionVisible = !state.value!!.isOrderSectionVisible
+                )
+            }
         }
     }
 
