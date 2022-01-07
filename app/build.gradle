@@ -63,4 +63,7 @@ dependencies {
     // viewModels
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.4.0'
+
+    // asLiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
 }
