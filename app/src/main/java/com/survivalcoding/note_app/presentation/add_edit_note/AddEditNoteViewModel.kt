@@ -1,15 +1,18 @@
 package com.survivalcoding.note_app.presentation.add_edit_note
 
-import android.graphics.Color
 import androidx.lifecycle.*
 import com.survivalcoding.note_app.domain.model.Note
 import com.survivalcoding.note_app.domain.repository.NoteRepository
+import com.survivalcoding.note_app.domain.use_case.NoteUseCases
+import com.survivalcoding.note_app.ui.colors
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
     private val repository: NoteRepository,
+    private val useCases: NoteUseCases,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -46,35 +49,27 @@ class AddEditNoteViewModel(
                 _noteColor.value = event.color
             }
             is AddEditNoteEvent.SaveNote -> {
-                when {
-                    event.title.isBlank() -> {
+                viewModelScope.launch(
+                    CoroutineExceptionHandler { _, throwable ->
                         viewModelScope.launch {
-                            _event.emit(UiEvent.ShowSnackBar("타이틀을 입력해 주세요"))
+                            _event.emit(UiEvent.ShowSnackBar(throwable.message ?: "Unknown Error"))
                         }
                     }
-                    event.content.isBlank() -> {
-                        viewModelScope.launch {
-                            _event.emit(UiEvent.ShowSnackBar("내용을 입력해 주세요"))
-                        }
-                    }
-                    else -> saveNote(event)
+                ) {
+                    useCases.addNote(
+                        Note(
+                            title = event.title,
+                            content = event.content,
+                            timestamp = System.currentTimeMillis(),
+                            color = noteColor.value ?: colors.first(),
+                            id = currentNoteId,
+                        )
+                    )
+
+                    _event.emit(UiEvent.SaveNote)
                 }
             }
         }
-    }
-
-    private fun saveNote(event: AddEditNoteEvent.SaveNote) = viewModelScope.launch {
-        repository.insertNote(
-            Note(
-                title = event.title,
-                content = event.content,
-                timestamp = System.currentTimeMillis(),
-                color = noteColor.value ?: Color.RED,
-                id = currentNoteId,
-            )
-        )
-
-        _event.emit(UiEvent.SaveNote)
     }
 
     sealed class UiEvent {

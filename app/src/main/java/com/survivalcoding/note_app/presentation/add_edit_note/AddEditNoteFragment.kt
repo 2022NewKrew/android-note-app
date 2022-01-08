@@ -14,6 +14,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
+import com.survivalcoding.note_app.core.extension.app
 import com.survivalcoding.note_app.databinding.FragmentAddEditNoteBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -32,7 +33,11 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
     ): View {
         viewModel = ViewModelProvider(
             this,
-            AddEditNoteViewModelFactory(this, arguments ?: savedInstanceState)
+            AddEditNoteViewModelFactory(
+                this,
+                app,
+                arguments ?: savedInstanceState
+            )
         )[AddEditNoteViewModel::class.java]
 
         _binding = FragmentAddEditNoteBinding.inflate(inflater, container, false)
@@ -105,7 +110,11 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
         _binding = null
     }
 
-    inner class AddEditNoteViewModelFactory(owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null) :
+    class AddEditNoteViewModelFactory(
+        owner: SavedStateRegistryOwner,
+        val app: App,
+        defaultArgs: Bundle? = null
+    ) :
         AbstractSavedStateViewModelFactory(
             owner, defaultArgs
         ) {
@@ -115,9 +124,10 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
             handle: SavedStateHandle
         ): T {
             if (modelClass.isAssignableFrom(AddEditNoteViewModel::class.java)) {
-                val repository = (requireActivity().application as App).repository
+                val useCases = app.noteUseCases
+                val repository = app.repository
 
-                return AddEditNoteViewModel(repository, handle) as T
+                return AddEditNoteViewModel(repository, useCases, handle) as T
             }
             throw IllegalArgumentException("Unknown ViewModel Class")
         }

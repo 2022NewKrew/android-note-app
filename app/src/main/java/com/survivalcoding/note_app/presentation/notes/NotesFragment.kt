@@ -1,7 +1,9 @@
 package com.survivalcoding.note_app.presentation.notes
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,8 +14,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
+import com.survivalcoding.note_app.core.extension.app
 import com.survivalcoding.note_app.databinding.FragmentNotesBinding
 import com.survivalcoding.note_app.domain.util.NoteOrder
 import com.survivalcoding.note_app.domain.util.OrderType
@@ -30,13 +32,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
-                        val repository = (requireActivity().application as App).repository
-                        val getNotesUseCase = (requireActivity().application as App).getNotesUseCase
-
-                        return NotesViewModel(
-                            repository = repository,
-                            getNotesUseCase = getNotesUseCase,
-                        ) as T
+                        return NotesViewModel(app.noteUseCases) as T
                     }
                     throw IllegalArgumentException("Unknown ViewModel Class")
                 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.survivalcoding.note_app.domain.model.Note
 import com.survivalcoding.note_app.domain.repository.NoteRepository
 import com.survivalcoding.note_app.domain.use_case.GetNotesUseCase
+import com.survivalcoding.note_app.domain.use_case.NoteUseCases
 import com.survivalcoding.note_app.domain.util.NoteOrder
 import com.survivalcoding.note_app.domain.util.OrderType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
-    private val repository: NoteRepository,
-    private val getNotesUseCase: GetNotesUseCase,
+    private val useCases: NoteUseCases,
 ) : ViewModel(), LifecycleEventObserver {
 
     private val _state = MutableStateFlow(NotesState())
@@ -27,7 +27,7 @@ class NotesViewModel(
         when (event) {
             is NotesEvent.DeleteNote -> {
                 viewModelScope.launch {
-                    repository.deleteNote(event.note)
+                    useCases.deleteNote(event.note)
                     recentlyDeletedNote = event.note
                 }
             }
@@ -37,7 +37,7 @@ class NotesViewModel(
             }
             NotesEvent.RestoreNote -> {
                 viewModelScope.launch {
-                    repository.insertNote(recentlyDeletedNote ?: return@launch)
+                    useCases.addNote(recentlyDeletedNote ?: return@launch)
                     recentlyDeletedNote = null
                 }
             }
@@ -50,7 +50,7 @@ class NotesViewModel(
     }
 
     private fun getNotes() {
-        getNotesUseCase(noteOrder)
+        useCases.getNotes(noteOrder)
             .onEach { notes ->
                 _state.value = _state.value.copy(
                     notes = notes,
