@@ -16,6 +16,7 @@ import com.survivalcoding.note_app.App
 import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.core.extension.app
 import com.survivalcoding.note_app.databinding.FragmentAddEditNoteBinding
+import com.survivalcoding.note_app.ui.colors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -64,14 +65,16 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
             Pair(binding.imageView5, ResourcesCompat.getColor(resources, R.color.illusion, null)),
         )
 
+        circles.first().first.isSelected = true
+
         circles.forEach { circle ->
             circle.first.setOnClickListener { view ->
                 view.isSelected = true
-
+//
                 circles.filter { it.first.id != view.id }
                     .forEach { it.first.isSelected = false }
 
-                val startDrawable = ColorDrawable(viewModel.noteColor.value ?: Color.WHITE)
+                val startDrawable = ColorDrawable(viewModel.noteColor.value ?: colors.first())
                 val endDrawable = ColorDrawable(circle.second)
                 val transitionDrawable = TransitionDrawable(arrayOf(startDrawable, endDrawable))
                 binding.background.background = transitionDrawable
@@ -81,9 +84,6 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
             }
         }
 
-        viewModel.noteColor.observe(viewLifecycleOwner, Observer { noteColor ->
-            binding.background.setBackgroundColor(noteColor)
-        })
         viewModel.noteTitle.observe(viewLifecycleOwner, Observer { title ->
             binding.titleEditText.setText(title)
         })
@@ -91,14 +91,17 @@ class AddEditNoteFragment : Fragment(R.layout.fragment_add_edit_note) {
             binding.contentEditText.setText(content)
         })
 
-        lifecycleScope.launch {
-            viewModel.event.collectLatest { event ->
-                when (event) {
-                    is AddEditNoteViewModel.UiEvent.SaveNote -> parentFragmentManager.popBackStack()
-                    is AddEditNoteViewModel.UiEvent.ShowSnackBar -> {
-                        Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
-                            .setAnchorView(binding.saveButton)
-                            .show()
+        // https://medium.com/androiddevelopers/a-safer-way-to-collect-flows-from-android-uis-23080b1f8bda
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        is AddEditNoteViewModel.UiEvent.SaveNote -> parentFragmentManager.popBackStack()
+                        is AddEditNoteViewModel.UiEvent.ShowSnackBar -> {
+                            Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
+                                .setAnchorView(binding.saveButton)
+                                .show()
+                        }
                     }
                 }
             }
