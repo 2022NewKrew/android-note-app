@@ -1,10 +1,10 @@
-package com.survivalcoding.noteapp.data.repository
+package com.example.data.repository_impl
 
-import com.survivalcoding.noteapp.domain.model.Note
-import com.survivalcoding.noteapp.domain.repository.NoteRepository
+import com.example.domain.entity.Note
+import com.example.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
 
-class NoteRepositorImpl : NoteRepository {
+class NoteRepositoryImpl : NoteRepository {
     override fun getNotes(): Flow<List<Note>> {
         TODO("Not yet implemented")
     }

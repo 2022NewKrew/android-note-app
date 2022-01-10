@@ -1,7 +1,7 @@
-package com.survivalcoding.noteapp.domain.model
+package com.example.domain.entity
 
 data class Note(
-    val id: Int? = null,
+    val id: Long? = null,
     val title: String,
     val content: String,
     val timestamp: Long,

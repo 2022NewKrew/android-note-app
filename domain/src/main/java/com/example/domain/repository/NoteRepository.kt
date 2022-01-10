@@ -1,6 +1,6 @@
-package com.survivalcoding.noteapp.domain.repository
+package com.example.domain.repository
 
-import com.survivalcoding.noteapp.domain.model.Note
+import com.example.domain.entity.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
