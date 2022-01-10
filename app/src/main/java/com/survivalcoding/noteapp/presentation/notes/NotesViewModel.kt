@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
-    private var _notes = MutableStateFlow<List<Note>>(listOf())
+    private val _notes = MutableStateFlow<List<Note>>(listOf())
     val notes: LiveData<List<Note>> = _notes.asLiveData()
 
     var key = ORDER_TITLE
@@ -23,6 +23,12 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
         viewModelScope.launch {
             val tmpNotes = noteRepository.getNotes(key, mode)
             _notes.value = tmpNotes
+        }
+    }
+
+    fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            noteRepository.deleteNote(note)
         }
     }
 
