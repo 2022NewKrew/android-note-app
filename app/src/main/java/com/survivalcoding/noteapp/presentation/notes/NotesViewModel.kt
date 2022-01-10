@@ -19,7 +19,7 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
         }
     }
 
-    fun sortNotes(key: String, mode: Boolean) {
+    fun sortNotes() {
         viewModelScope.launch {
             val tmpNotes = noteRepository.getNotes(key, mode)
             _notes.value = tmpNotes
