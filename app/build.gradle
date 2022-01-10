@@ -60,4 +60,5 @@ dependencies {
 
     // module
     implementation project(path: ':domain')
+    implementation project(path: ':data')
 }
