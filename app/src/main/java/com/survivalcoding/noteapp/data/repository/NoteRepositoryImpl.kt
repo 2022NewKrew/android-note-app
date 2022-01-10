@@ -4,8 +4,16 @@ import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
 
-class NoteRepositorImpl : NoteRepository {
-    override fun getNotes(): Flow<List<Note>> {
+class NoteRepositoryImpl : NoteRepository {
+    override suspend fun getNotesOrderByTitle(): List<Note> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getNotesOrderByDate(): List<Note> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getNotesOrderByColor(): List<Note> {
         TODO("Not yet implemented")
     }
 

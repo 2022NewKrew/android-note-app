@@ -4,7 +4,11 @@ import com.survivalcoding.noteapp.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-    fun getNotes(): Flow<List<Note>>
+    suspend fun getNotesOrderByTitle(): List<Note>
+
+    suspend fun getNotesOrderByDate(): List<Note>
+
+    suspend fun getNotesOrderByColor(): List<Note>
 
     suspend fun getNoteById(id: Int): Note?
 
