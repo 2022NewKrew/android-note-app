@@ -9,7 +9,7 @@ class NoteRepositoryImpl : NoteRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getNoteById(id: Int): Note? {
+    override suspend fun getNoteById(id: Long): Note? {
         TODO("Not yet implemented")
     }
 
