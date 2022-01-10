@@ -4,7 +4,7 @@ import com.survivalcoding.noteapp.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-    fun getNotes(key: String, mode: Boolean): Flow<List<Note>>
+    suspend fun getNotes(key: String, mode: Boolean): List<Note>
 
     suspend fun getNoteById(id: Long): Note?
 
