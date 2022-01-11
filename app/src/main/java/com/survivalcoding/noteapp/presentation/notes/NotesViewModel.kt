@@ -17,7 +17,7 @@ class NotesViewModel(
 ) : ViewModel() {
     private val _notes = MutableLiveData<List<Note>>()
     val notes: LiveData<List<Note>> get() = _notes
-    private val _sortFactor = MutableLiveData(SORT_DESC)
+    private val _sortFactor = MutableLiveData(SORT_BY_TIMESTAMP)
     val sortFactor: LiveData<String> get() = _sortFactor
     private val _sortType = MutableLiveData(SORT_DESC)
     val sortType: LiveData<String> get() = _sortType
