@@ -1,11 +1,9 @@
 package com.survivalcoding.noteapp.data.datasource
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.survivalcoding.noteapp.domain.model.Note
 
+@Dao
 interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: Note)
