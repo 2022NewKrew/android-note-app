@@ -16,20 +16,37 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _notes.value = noteRepository.getNotes(key, mode)
+            sortNotes()
         }
     }
 
     fun sortNotes() {
         viewModelScope.launch {
-            _notes.value = noteRepository.getNotes(key, mode)
+            val list = noteRepository.getNotes()
+            _notes.value =
+                when (mode) {
+                    ORDER_ASC -> {
+                        when (key) {
+                            ORDER_TITLE -> list.sortedBy { it.title }
+                            ORDER_TIMESTAMP -> list.sortedBy { it.timestamp }
+                            else -> list.sortedBy { it.color }
+                        }
+                    }
+                    else -> {
+                        when (key) {
+                            ORDER_TITLE -> list.sortedByDescending { it.title }
+                            ORDER_TIMESTAMP -> list.sortedByDescending { it.timestamp }
+                            else -> list.sortedByDescending { it.color }
+                        }
+                    }
+                }
         }
     }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             noteRepository.deleteNote(note)
-            _notes.value = noteRepository.getNotes(key, mode)
+            sortNotes()
         }
     }
 

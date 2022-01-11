@@ -12,14 +12,10 @@ import java.util.*
 class AddEditNoteViewModel(
     private val notesRepository: NoteRepository
 ) : ViewModel() {
-    var id = -1L
+    var id = Date().time
     var title = ""
     var content = ""
-    var backgroundColor = Color.CYAN
-
-    fun setColor(selectedColor: Int) {
-        backgroundColor = selectedColor
-    }
+    var backgroundColor = AddEditNoteFragment.COLOR_1
 
     fun insert() {
         viewModelScope.launch {
@@ -32,20 +28,6 @@ class AddEditNoteViewModel(
                     color = backgroundColor,
                 )
             )
-        }
-    }
-
-    fun setInfo(mode: Int, note: Note = Note()) {
-        if (mode == MODE_ADD) {
-            id = Date().time
-            title = ""
-            content = ""
-            backgroundColor = Color.CYAN
-        } else {
-            id = note.id ?: Date().time
-            title = note.title
-            content = note.content
-            backgroundColor = Color.CYAN
         }
     }
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="#1d1d1d"
+    android:background="@color/background"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your note"
-            android:textColor="#d8d8d8"
+            android:textColor="@color/buttonWhite"
             android:textSize="40sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#d8d8d8" />
+            app:tint="@color/buttonWhite" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Title"
-                android:textColor="#d8d8d8"
+                android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />
 
             <RadioButton
@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date"
-                android:textColor="#d8d8d8"
+                android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />
 
             <RadioButton
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Color"
-                android:textColor="#d8d8d8"
+                android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />
         </RadioGroup>
 
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Ascending"
-                android:textColor="#d8d8d8"
+                android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />
 
             <RadioButton
@@ -109,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Descending"
-                android:textColor="#d8d8d8"
+                android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />
         </RadioGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -136,11 +136,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
-        android:backgroundTint="#d8d8d8"
+        android:backgroundTint="@color/buttonWhite"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_add"
-        android:tint="#1d1d1d"
+        android:tint="@color/background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />

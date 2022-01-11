@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.MainActivity
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
@@ -35,6 +37,7 @@ class NotesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
+        viewModel.sortNotes()
         return binding.root
     }
 
@@ -71,9 +74,20 @@ class NotesFragment : Fragment() {
         }
 
         binding.fabAddNewNoteButton.setOnClickListener {
-            (requireActivity() as MainActivity).replaceFragment(AddEditNoteFragment())
+            parentFragmentManager.commit {
+                replace(R.id.fragmentContainerView, AddEditNoteFragment())
+                setReorderingAllowed(true)
+                addToBackStack(null)
+            }
         }
 
         viewModel.notes.observe(this) { noteListAdapter.submitList(it) }
+    }
+
+    companion object {
+        const val ID = "note_id"
+        const val TITLE = "note_title"
+        const val CONTENT = "note_content"
+        const val COLOR = "note_color"
     }
 }

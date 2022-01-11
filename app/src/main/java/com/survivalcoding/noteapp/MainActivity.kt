@@ -19,12 +19,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.commit {
-            replace(R.id.fragmentContainerView, fragment)
-            setReorderingAllowed(true)
-            addToBackStack(null)
-        }
-    }
 }
