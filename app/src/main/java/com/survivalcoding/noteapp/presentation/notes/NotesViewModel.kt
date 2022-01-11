@@ -15,14 +15,19 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
     var filter = FILTER_CLOSE
 
     init {
+        refreshNoteList()
+    }
+
+    fun refreshNoteList() {
         viewModelScope.launch {
+            _notes.value = noteRepository.getNotes()
             sortNotes()
         }
     }
 
     fun sortNotes() {
         viewModelScope.launch {
-            val list = noteRepository.getNotes()
+            val list = _notes.value ?: listOf()
             _notes.value =
                 when (mode) {
                     ORDER_ASC -> {
@@ -46,7 +51,7 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             noteRepository.deleteNote(note)
-            sortNotes()
+            refreshNoteList()
         }
     }
 
@@ -60,6 +65,8 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
         const val FILTER_OPEN = View.VISIBLE
         const val FILTER_CLOSE = View.GONE
+
+        const val NOTE_KEY = "note_key"
     }
 }
 
