@@ -1,6 +1,8 @@
 package com.survivalcoding.noteapp.presentation.notes
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.Note
 import com.example.domain.repository.NoteRepository
 import com.example.domain.usecase.DeleteNodeUseCase
@@ -10,7 +12,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 
 class NotesViewModel(
     private val getNoteAllUseCase: GetNoteAllUseCase,

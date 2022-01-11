@@ -15,16 +15,16 @@ class NoteViewHolder(private val binding: ItemNoteBinding) : ViewHolder(binding.
         ) {
         binding.noteTitleView.text = item.title
         binding.noteContentView.text = item.content
-
+        binding.cardView.setBackgroundColor(item.color)
         /* 날짜 지정
         val pattern = "yyyy-MM-dd HH:mm:ss"
         val formatter = SimpleDateFormat(pattern, Locale.getDefault())
         val date = "set : " + formatter.format(item.timestamp)
         binding.deadlineTextview.text = date
          */
-       binding.root.setOnClickListener {
-           onLongClicked(item)
-       }
+        binding.root.setOnClickListener {
+            onLongClicked(item)
+        }
     }
 
     companion object {

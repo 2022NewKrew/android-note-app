@@ -14,4 +14,4 @@ data class Note(
     val content: String,
     val timestamp: Long,
     val color: Int,
-):Parcelable
+) : Parcelable

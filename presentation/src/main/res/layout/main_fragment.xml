@@ -8,13 +8,76 @@
     android:layout_height="match_parent"
     >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/note_list_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@android:layout/simple_expandable_list_item_1"
-        tools:itemCount="15"
-        />
+        android:layout_height="match_parent">
+
+        <RadioGroup
+            android:id="@+id/content_sort_group_view"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <RadioButton
+                android:id="@+id/time_sorting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="time"
+                android:checked="true"
+                />
+
+            <RadioButton
+                android:id="@+id/title_sorting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="title"
+                />
+
+            <RadioButton
+                android:id="@+id/color_sorting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="color"
+                />
+        </RadioGroup>
+
+
+        <RadioGroup
+            android:id="@+id/order_sort_group_view"
+            android:layout_below="@id/content_sort_group_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <RadioButton
+                android:id="@+id/ascending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ascending"
+                android:checked="true"
+                />
+
+            <RadioButton
+                android:id="@+id/descending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="descending"
+                />
+        </RadioGroup>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/note_list_view"
+            android:layout_below="@id/order_sort_group_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@android:layout/simple_expandable_list_item_1"
+            tools:itemCount="15"
+            />
+
+    </RelativeLayout>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

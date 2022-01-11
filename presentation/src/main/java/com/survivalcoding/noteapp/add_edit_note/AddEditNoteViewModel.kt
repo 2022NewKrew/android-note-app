@@ -20,13 +20,13 @@ class AddEditNoteViewModel(
 ) : ViewModel() {
 
 
-    fun updateNote(note: Note){
+    fun updateNote(note: Note) {
         viewModelScope.launch(coroutineDispatcher) {
             updateNoteUseCase(note)
         }
     }
 
-    fun insertNote(note: Note){
+    fun insertNote(note: Note) {
         viewModelScope.launch(coroutineDispatcher) {
             insertNodeUseCase(note)
         }

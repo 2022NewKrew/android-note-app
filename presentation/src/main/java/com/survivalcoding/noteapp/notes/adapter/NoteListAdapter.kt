@@ -21,4 +21,19 @@ class NoteListAdapter(
         if (position >= itemCount) return
         onLeftSwiped(currentList.toMutableList()[position])
     }
+
+    fun sorting(sorted_with: String, ascOrDesc: String) {
+        when (ascOrDesc) {
+            "ASC" -> {
+                if (sorted_with == "TIME") submitList(currentList.sortedBy { it.timestamp })
+                else if (sorted_with == "TITLE") submitList(currentList.sortedBy { it.title })
+                else if (sorted_with == "COLOR") submitList(currentList.sortedBy { it.color })
+            }
+            "DESC" -> {
+                if (sorted_with == "TIME") submitList(currentList.sortedByDescending { it.timestamp })
+                else if (sorted_with == "TITLE") submitList(currentList.sortedByDescending { it.title })
+                else if (sorted_with == "COLOR") submitList(currentList.sortedByDescending { it.color })
+            }
+        }
+    }
 }

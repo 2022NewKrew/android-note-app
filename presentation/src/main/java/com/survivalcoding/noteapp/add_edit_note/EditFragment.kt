@@ -28,7 +28,7 @@ class EditFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = EditFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -79,7 +79,7 @@ class EditFragment : Fragment() {
                     val newNote = it.copy(
                         title = binding.titleInputView.text.toString(),
                         content = binding.contentInputView.text.toString(),
-                        color = Color.RED,
+                        color = Color.WHITE,
                         timestamp = Date().time
                     )
                     viewModel.updateNote(newNote)
@@ -88,7 +88,7 @@ class EditFragment : Fragment() {
                 val newNote = Note(
                     title = binding.titleInputView.text.toString(),
                     content = binding.contentInputView.text.toString(),
-                    color = Color.RED,
+                    color = Color.WHITE,
                     timestamp = Date().time
                 )
                 viewModel.insertNote(newNote)
