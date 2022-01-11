@@ -6,6 +6,8 @@ import com.example.domain.repository.NoteRepository
 import com.example.domain.usecase.DeleteNodeUseCase
 import com.example.domain.usecase.GetNoteAllUseCase
 import com.example.domain.usecase.GetNoteByIdUseCase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
@@ -13,7 +15,8 @@ import java.lang.IllegalArgumentException
 class NotesViewModel(
     private val getNoteAllUseCase: GetNoteAllUseCase,
     private val getNoteByIdUseCase: GetNoteByIdUseCase,
-    private val deleteNodeUseCase: DeleteNodeUseCase
+    private val deleteNodeUseCase: DeleteNodeUseCase,
+    private val coroutineDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     val notes: Flow<List<Note>> = getNoteAllUseCase()
@@ -25,13 +28,13 @@ class NotesViewModel(
      */
 
     fun deleteNote(note: Note) {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcher) {
             deleteNodeUseCase(note)
         }
     }
 }
 
-class NotesViewModelFacotry(
+class NotesViewModelFactory(
     private val repository: NoteRepository
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -39,7 +42,8 @@ class NotesViewModelFacotry(
             return NotesViewModel(
                 GetNoteAllUseCase(repository),
                 GetNoteByIdUseCase(repository),
-                DeleteNodeUseCase(repository)
+                DeleteNodeUseCase(repository),
+                Dispatchers.IO
             ) as T
         } else throw IllegalArgumentException()
     }

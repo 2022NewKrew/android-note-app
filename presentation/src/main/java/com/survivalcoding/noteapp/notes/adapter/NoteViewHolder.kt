@@ -10,7 +10,9 @@ class NoteViewHolder(private val binding: ItemNoteBinding) : ViewHolder(binding.
 
     fun bind(
         item: Note,
-    ) {
+        onLongClicked: (Note) -> Unit,
+
+        ) {
         binding.noteTitleView.text = item.title
         binding.noteContentView.text = item.content
 
@@ -20,6 +22,9 @@ class NoteViewHolder(private val binding: ItemNoteBinding) : ViewHolder(binding.
         val date = "set : " + formatter.format(item.timestamp)
         binding.deadlineTextview.text = date
          */
+       binding.root.setOnClickListener {
+           onLongClicked(item)
+       }
     }
 
     companion object {

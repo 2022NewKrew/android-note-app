@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.domain.entity.Note
 
 class NoteListAdapter(
+    private val onLongClicked: (Note) -> Unit,
     private val onLeftSwiped: (Note) -> Unit
 ) :
     ListAdapter<Note, NoteViewHolder>(NoteDiffItemCallback) {
@@ -13,7 +14,7 @@ class NoteListAdapter(
         NoteViewHolder.builder(parent)
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onLongClicked)
     }
 
     fun removeItem(position: Int) {
