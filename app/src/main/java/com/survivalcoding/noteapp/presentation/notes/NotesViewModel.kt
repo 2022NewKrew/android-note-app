@@ -8,12 +8,12 @@ import kotlinx.coroutines.launch
 
 class NotesViewModel(
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val sortByColorAscUseCase: SortByColorAcsUseCase,
-    private val sortByColorDecsUseCase: SortByColorDecsUseCase,
-    private val sortByTimestampAscUseCase: SortByTimestampAcsUseCase,
-    private val sortByTimestampDecsUseCase: SortByTimestampDecsUseCase,
-    private val sortByTitleAscUseCase: SortByTitleAcsUseCase,
-    private val sortByTitleDecsUseCase: SortByTitleDecsUseCase
+    private val sortByColorAscUseCase: SortByColorAscUseCase,
+    private val sortByColorDescUseCase: SortByColorDescUseCase,
+    private val sortByTimestampAscUseCase: SortByTimestampAscUseCase,
+    private val sortByTimestampDescUseCase: SortByTimestampDescUseCase,
+    private val sortByTitleAscUseCase: SortByTitleAscUseCase,
+    private val sortByTitleDescUseCase: SortByTitleDescUseCase
 ) : ViewModel() {
     private val _notes = MutableLiveData<List<Note>>()
     val notes: LiveData<List<Note>> get() = _notes
@@ -29,19 +29,19 @@ class NotesViewModel(
                 SORT_BY_COLOR -> {
                     _notes.value =
                         if (sortType.value.equals(SORT_ASC)) sortByColorAscUseCase()
-                        else sortByColorDecsUseCase()
+                        else sortByColorDescUseCase()
                 }
                 // title 기준 정렬
                 SORT_BY_TITLE -> {
                     _notes.value =
                         if (sortType.value.equals(SORT_ASC)) sortByTitleAscUseCase()
-                        else sortByTitleDecsUseCase()
+                        else sortByTitleDescUseCase()
                 }
                 // timestamp 기준 정렬
                 SORT_BY_TIMESTAMP -> {
                     _notes.value =
                         if (sortType.value.equals(SORT_ASC)) sortByTimestampAscUseCase()
-                        else sortByTimestampDecsUseCase()
+                        else sortByTimestampDescUseCase()
                 }
             }
         }
@@ -70,12 +70,12 @@ class NotesViewModelFactory(
         if (modelClass.isAssignableFrom(NotesViewModel::class.java))
             return NotesViewModel(
                 DeleteNoteUseCase(repository),
-                SortByColorAcsUseCase(repository),
-                SortByColorDecsUseCase(repository),
-                SortByTimestampAcsUseCase(repository),
-                SortByTimestampDecsUseCase(repository),
-                SortByTitleAcsUseCase(repository),
-                SortByTitleDecsUseCase(repository)
+                SortByColorAscUseCase(repository),
+                SortByColorDescUseCase(repository),
+                SortByTimestampAscUseCase(repository),
+                SortByTimestampDescUseCase(repository),
+                SortByTitleAscUseCase(repository),
+                SortByTitleDescUseCase(repository)
             ) as T
         else throw IllegalArgumentException()
     }
