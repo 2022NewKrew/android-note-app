@@ -3,12 +3,12 @@ package com.survivalcoding.noteapp.presentation.notes
 import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.model.Order
-import com.survivalcoding.noteapp.domain.repository.NoteRepository
+import com.survivalcoding.noteapp.domain.usecase.GetNotesByOrderUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
+class NotesViewModel(private val getNotesByOrderUseCase: GetNotesByOrderUseCase) : ViewModel() {
 
     private val _eventFlow = MutableSharedFlow<Event>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -18,7 +18,7 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
     init {
         viewModelScope.launch {
-//            _notesUiState.value = NotesUiState(noteList =, orderBy = Order.defaultOrder)
+            _notesUiState.value = NotesUiState(noteList = getNotesByOrderUseCase(Order.defaultOrder), orderBy = Order.defaultOrder)
         }
     }
 
@@ -29,7 +29,7 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
     private fun getNotesListOrderBy(order: Order) {
         viewModelScope.launch {
-//            _notesUiState.value = _notesUiState.value?.copy(noteList = , orderBy = order)
+            _notesUiState.value = _notesUiState.value?.copy(noteList = getNotesByOrderUseCase(Order.defaultOrder), orderBy = order)
         }
     }
 
@@ -46,11 +46,11 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 }
 
 @Suppress("UNCHECKED_CAST")
-class NotesViewModelFactory(private val noteRepository: NoteRepository) :
+class NotesViewModelFactory(private val getNotesByOrderUseCase: GetNotesByOrderUseCase) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
-            return NotesViewModel(noteRepository) as T
+            return NotesViewModel(getNotesByOrderUseCase) as T
         } else {
             throw IllegalArgumentException()
         }
