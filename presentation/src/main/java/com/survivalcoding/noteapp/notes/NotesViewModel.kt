@@ -1,15 +1,14 @@
 package com.survivalcoding.noteapp.presentation.notes
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.observe
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.domain.entity.Note
+import com.example.domain.repository.NoteRepository
 import com.example.domain.usecase.DeleteNodeUseCase
 import com.example.domain.usecase.GetNoteAllUseCase
 import com.example.domain.usecase.GetNoteByIdUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 
 class NotesViewModel(
     private val getNoteAllUseCase: GetNoteAllUseCase,
@@ -30,6 +29,19 @@ class NotesViewModel(
             deleteNodeUseCase(note)
         }
     }
+}
 
+class NotesViewModelFacotry(
+    private val repository: NoteRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
+            return NotesViewModel(
+                GetNoteAllUseCase(repository),
+                GetNoteByIdUseCase(repository),
+                DeleteNodeUseCase(repository)
+            ) as T
+        } else throw IllegalArgumentException()
+    }
 
 }
