@@ -11,6 +11,8 @@ class NotesViewModel(
     private val notesRepository: NotesRepository
 ) : AndroidViewModel(application) {
     val notes: LiveData<List<Note>> = notesRepository.getNotes().asLiveData()
+    private var _deletedNote = MutableLiveData<Note?>()
+    val deletedNote: LiveData<Note?> = _deletedNote
 
     suspend fun getNoteById(id: Int): Note? = notesRepository.getNoteById(id)
 
@@ -23,6 +25,16 @@ class NotesViewModel(
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             notesRepository.deleteNote(note)
+            _deletedNote.value = note
+        }
+    }
+
+    fun restoreNote() {
+        viewModelScope.launch {
+            _deletedNote.value?.let {
+                notesRepository.insertNote(it)
+            }
+            _deletedNote.value = null
         }
     }
 }
