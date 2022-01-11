@@ -1,17 +1,18 @@
 package com.survivalcoding.noteapp.presentation.notes
 
+import android.view.View
 import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
-    private val _notes = MutableStateFlow<List<Note>>(listOf())
-    val notes: LiveData<List<Note>> = _notes.asLiveData()
+    private val _notes = MutableLiveData<List<Note>>(listOf())
+    val notes: LiveData<List<Note>> = _notes
 
     var key = ORDER_TITLE
     var mode = ORDER_ASC
+    var filter = FILTER_CLOSE
 
     init {
         viewModelScope.launch {
@@ -21,14 +22,14 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
     fun sortNotes() {
         viewModelScope.launch {
-            val tmpNotes = noteRepository.getNotes(key, mode)
-            _notes.value = tmpNotes
+            _notes.value = noteRepository.getNotes(key, mode)
         }
     }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             noteRepository.deleteNote(note)
+            _notes.value = noteRepository.getNotes(key, mode)
         }
     }
 
@@ -39,6 +40,9 @@ class NotesViewModel(private val noteRepository: NoteRepository) : ViewModel() {
 
         const val ORDER_ASC = true
         const val ORDER_DESC = false
+
+        const val FILTER_OPEN = View.VISIBLE
+        const val FILTER_CLOSE = View.GONE
     }
 }
 
