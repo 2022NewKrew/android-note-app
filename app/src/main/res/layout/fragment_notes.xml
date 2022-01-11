@@ -23,9 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintStart_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleText">
+        app:layout_constraintTop_toBottomOf="@+id/titleText">
 
         <RadioGroup
             android:id="@+id/filterRadioGroup"
@@ -50,7 +50,6 @@
                 android:id="@+id/dateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:padding="5dp"
                 android:text="date" />
 
@@ -78,7 +77,6 @@
                 android:id="@+id/ascendingButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:padding="5dp"
                 android:text="ascending" />
 
@@ -93,7 +91,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/alignButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
