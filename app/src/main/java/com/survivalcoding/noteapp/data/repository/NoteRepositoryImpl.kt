@@ -9,8 +9,6 @@ class NoteRepositoryImpl(private val dao: NoteDao) : NoteRepository {
 
     override suspend fun deleteNote(note: Note) = dao.deleteNote(note)
 
-    override suspend fun getNotesByColor(color: Int): List<Note> = dao.getNotesByColor(color)
-
     override suspend fun sortByColorAsc(): List<Note> = dao.sortByColorAsc()
 
     override suspend fun sortByColorDesc(): List<Note> = dao.sortByColorDesc()

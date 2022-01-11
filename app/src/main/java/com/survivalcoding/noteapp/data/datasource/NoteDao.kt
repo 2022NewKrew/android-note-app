@@ -13,9 +13,6 @@ interface NoteDao {
     @Delete
     suspend fun deleteNote(note: Note)
 
-    @Query("SELECT * FROM note WHERE color LIKE :color")
-    suspend fun getNotesByColor(color: Int): List<Note>
-
     @Query("SELECT * FROM note ORDER BY color ASC")
     suspend fun sortByColorAsc(): List<Note>
 

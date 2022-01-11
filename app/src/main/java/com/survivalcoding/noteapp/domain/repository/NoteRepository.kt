@@ -7,8 +7,6 @@ interface NoteRepository {
 
     suspend fun deleteNote(note: Note)
 
-    suspend fun getNotesByColor(color: Int): List<Note>
-
     suspend fun sortByColorAsc(): List<Note>
 
     suspend fun sortByColorDesc(): List<Note>
