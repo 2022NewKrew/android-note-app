@@ -17,6 +17,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 class NoteRepositoryImplTest {
@@ -29,6 +30,8 @@ class NoteRepositoryImplTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, NoteDatabase::class.java).build()
         noteDao = db.noteDao
+
+        repository = NoteRepositoryImpl(noteDao)
     }
 
     @After
@@ -58,7 +61,17 @@ class NoteRepositoryImplTest {
     }
 
     @Test
-    fun insertNote() {
+    fun insertNote() = runBlocking {
+        val note = Note(
+            id = 1,
+            title = "test",
+            content = "test",
+            timestamp = Date().time,
+            color = 1,
+        )
+        repository.insertNote(note)
+
+        assertThat(repository.getNotes().first().first(), IsEqual(note))
     }
 
     @Test
