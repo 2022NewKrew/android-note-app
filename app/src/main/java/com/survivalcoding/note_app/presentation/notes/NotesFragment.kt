@@ -12,6 +12,7 @@ import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.note_app.R
@@ -109,7 +110,7 @@ class NotesFragment : Fragment(R.layout.fragment_notes) {
             viewModel.onEvent(NotesEvent.ToggleOrderSection)
         }
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
+        viewModel.state.asLiveData().observe(viewLifecycleOwner) { state ->
             notesAdapter.submitList(state.notes)
 
             binding.radioGroup.isVisible = state.isOrderSectionVisible

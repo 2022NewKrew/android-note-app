@@ -8,6 +8,7 @@ import com.survivalcoding.note_app.domain.use_case.NoteUseCases
 import com.survivalcoding.note_app.domain.util.NoteOrder
 import com.survivalcoding.note_app.domain.util.OrderType
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -17,7 +18,7 @@ class NotesViewModel(
 ) : ViewModel(), LifecycleEventObserver {
 
     private val _state = MutableStateFlow(NotesState())
-    val state: LiveData<NotesState> = _state.asLiveData()
+    val state: StateFlow<NotesState> = _state
 
     private var recentlyDeletedNote: Note? = null
 
@@ -49,7 +50,7 @@ class NotesViewModel(
         }
     }
 
-    private fun getNotes() {
+    fun getNotes() {
         useCases.getNotes(noteOrder)
             .onEach { notes ->
                 _state.value = _state.value.copy(
