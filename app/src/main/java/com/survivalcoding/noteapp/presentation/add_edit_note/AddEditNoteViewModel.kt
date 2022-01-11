@@ -5,9 +5,14 @@ import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
+import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
+import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
 import kotlinx.coroutines.launch
 
-class AddEditNoteViewModel(private val noteRepository: NoteRepository) : ViewModel() {
+class AddEditNoteViewModel(
+    private val insertNoteUseCase: InsertNoteUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase
+) : ViewModel() {
 
     private var id = -1
     private val mode: Mode
@@ -42,7 +47,7 @@ class AddEditNoteViewModel(private val noteRepository: NoteRepository) : ViewMod
 
     private fun addNote(editNoteUiState: EditNoteUiState) {
         viewModelScope.launch {
-            noteRepository.insertNote(
+            insertNoteUseCase(
                 Note(
                     title = editNoteUiState.title.toString(),
                     content = editNoteUiState.content.toString(),
@@ -54,7 +59,7 @@ class AddEditNoteViewModel(private val noteRepository: NoteRepository) : ViewMod
 
     private fun modifyNote(editNoteUiState: EditNoteUiState) {
         viewModelScope.launch {
-            noteRepository.insertNote(
+            deleteNoteUseCase(
                 Note(
                     id = id,
                     title = editNoteUiState.title.toString(),
@@ -72,11 +77,14 @@ class AddEditNoteViewModel(private val noteRepository: NoteRepository) : ViewMod
 }
 
 @Suppress("UNCHECKED_CAST")
-class AddEditNoteViewModelFactory(private val noteRepository: NoteRepository) :
+class AddEditNoteViewModelFactory(
+    private val insertNoteUseCase: InsertNoteUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase
+) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddEditNoteViewModel::class.java)) {
-            return AddEditNoteViewModel(noteRepository) as T
+            return AddEditNoteViewModel(insertNoteUseCase, deleteNoteUseCase) as T
         } else {
             throw IllegalArgumentException()
         }
