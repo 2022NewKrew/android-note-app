@@ -1,8 +1,8 @@
-package com.survivalcoding.noteapp.domain.repository
+package com.survivalcoding.noteapp.data.data_source
 
 import com.survivalcoding.noteapp.domain.model.Note
 
-interface NoteRepository {
+interface NoteLocalDataSource {
     suspend fun getNotesOrderByTitleAsc(): List<Note>
 
     suspend fun getNotesOrderByTitleDesc(): List<Note>
