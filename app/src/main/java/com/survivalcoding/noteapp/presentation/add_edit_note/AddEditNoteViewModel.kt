@@ -13,7 +13,7 @@ class AddEditNoteViewModel(private val noteRepository: NoteRepository) : ViewMod
     private val mode: Mode
         get() = if (id == -1) Mode.CREATE_MODE else Mode.EDIT_MODE
 
-    private val _editNoteUiState = MutableLiveData(EditNoteUiState(color = DEFAULT_COLOR))
+    private val _editNoteUiState = MutableLiveData(EditNoteUiState(color = Color.defaultColor))
     val editNoteUiState: LiveData<EditNoteUiState> = _editNoteUiState
 
     fun setId(id: Int) {
@@ -68,10 +68,6 @@ class AddEditNoteViewModel(private val noteRepository: NoteRepository) : ViewMod
     enum class Mode {
         EDIT_MODE,
         CREATE_MODE
-    }
-
-    companion object {
-        private val DEFAULT_COLOR = Color.YELLOW
     }
 }
 

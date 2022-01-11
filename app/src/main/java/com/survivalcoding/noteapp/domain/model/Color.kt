@@ -8,6 +8,8 @@ enum class Color(val value: Int) {
     LAVENDER(4);
 
     companion object {
+        val defaultColor = YELLOW
+
         private val map = Color.values().associateBy(Color::value)
         fun fromInt(value: Int) = map[value]
     }
