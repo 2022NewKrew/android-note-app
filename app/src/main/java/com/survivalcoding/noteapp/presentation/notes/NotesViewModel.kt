@@ -25,8 +25,8 @@ class NotesViewModel(
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             notesRepository.deleteNote(note)
-            deletedNote = note
         }
+        deletedNote = note
     }
 
     fun restoreNote() {
@@ -34,16 +34,22 @@ class NotesViewModel(
             deletedNote?.let {
                 notesRepository.insertNote(it)
             }
-            deletedNote = null
         }
+        setDeletedNull()
     }
 
-    fun filterNotes(filter: Int, sort: Int){
+    fun setDeletedNull() {
+        deletedNote = null
+    }
+
+    fun sortNotes(filter: Int, sort: Int){
         viewModelScope.launch{
-            //LiveData는 _notes.value = filtering() 이런 식으로 알려줄 수 있는데
-            //Flow는 어떻게??
-            //생각나는건 NoteDao에 filtering 관련으로 정렬된 채 오는 쿼리문을 작성해서 이를 Flow로 받게 하는 것
-            //근데 이게 과연 효율적인가??
+            //ToDo: 소팅 기능 구현
+            //LiveData는 _notes.value = filtering() 이런 식으로 알려줄 수 있는데 Flow는 어떻게 할까...
+            //생각나는 건
+            //1. NoteDao에 filtering 관련으로 정렬된 채 오는 쿼리문을 작성해서 이를 Flow로 받게 하는 것
+            //2. filterNotes를 ViewModel에서 처리하지 않고 RecyclerView Adapter에서 처리하는 것
+            //정렬 기능은 어디서 처리하는게 좋을까요?
         }
     }
 }
