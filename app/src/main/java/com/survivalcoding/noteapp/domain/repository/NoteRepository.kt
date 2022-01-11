@@ -1,14 +1,19 @@
 package com.survivalcoding.noteapp.domain.repository
 
 import com.survivalcoding.noteapp.domain.model.Note
-import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-    suspend fun getNotesOrderByTitle(): List<Note>
+    suspend fun getNotesOrderByTitleAsc(): List<Note>
 
-    suspend fun getNotesOrderByDate(): List<Note>
+    suspend fun getNotesOrderByTitleDesc(): List<Note>
 
-    suspend fun getNotesOrderByColor(): List<Note>
+    suspend fun getNotesOrderByDateAsc(): List<Note>
+
+    suspend fun getNotesOrderByDateDesc(): List<Note>
+
+    suspend fun getNotesOrderByColorAsc(): List<Note>
+
+    suspend fun getNotesOrderByColorDesc(): List<Note>
 
     suspend fun getNoteById(id: Int): Note?
 

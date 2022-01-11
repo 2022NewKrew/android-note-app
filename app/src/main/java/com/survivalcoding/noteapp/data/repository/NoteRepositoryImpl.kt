@@ -1,31 +1,25 @@
 package com.survivalcoding.noteapp.data.repository
 
+import android.graphics.Color
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
-import kotlinx.coroutines.flow.Flow
 
 class NoteRepositoryImpl : NoteRepository {
-    override suspend fun getNotesOrderByTitle(): List<Note> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNotesOrderByTitleAsc(): List<Note> = listOf()
 
-    override suspend fun getNotesOrderByDate(): List<Note> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNotesOrderByTitleDesc(): List<Note> = listOf()
 
-    override suspend fun getNotesOrderByColor(): List<Note> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNotesOrderByDateAsc(): List<Note> = listOf()
 
-    override suspend fun getNoteById(id: Int): Note? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNotesOrderByDateDesc(): List<Note> = listOf()
 
-    override suspend fun insertNote(note: Note) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNotesOrderByColorAsc(): List<Note> = listOf()
 
-    override suspend fun deleteNote(note: Note) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNotesOrderByColorDesc(): List<Note> = listOf()
+
+    override suspend fun getNoteById(id: Int): Note? = Note(title = "", content = "", color = Color.YELLOW)
+
+    override suspend fun insertNote(note: Note) {}
+
+    override suspend fun deleteNote(note: Note) {}
 }
