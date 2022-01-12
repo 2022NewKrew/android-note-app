@@ -10,12 +10,7 @@ import kotlinx.coroutines.launch
 
 class NotesViewModel(
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val sortByColorAscUseCase: SortByColorAscUseCase,
-    private val sortByColorDescUseCase: SortByColorDescUseCase,
-    private val sortByTimestampAscUseCase: SortByTimestampAscUseCase,
-    private val sortByTimestampDescUseCase: SortByTimestampDescUseCase,
-    private val sortByTitleAscUseCase: SortByTitleAscUseCase,
-    private val sortByTitleDescUseCase: SortByTitleDescUseCase
+    private val getNotesUseCase: GetNotesUseCase
 ) : ViewModel() {
     private val _notes = MutableLiveData<List<Note>>()
     val notes: LiveData<List<Note>> get() = _notes
@@ -24,29 +19,11 @@ class NotesViewModel(
     private val _sortType = MutableLiveData(SortType.DESC)
     val sortType: LiveData<SortType> get() = _sortType
 
-    fun getNotes() {
-        viewModelScope.launch {
-            when (sortFactor.value) {
-                // color 기준 정렬
-                SortFactor.COLOR -> {
-                    _notes.value =
-                        if (sortType.value == SortType.ASC) sortByColorAscUseCase()
-                        else sortByColorDescUseCase()
-                }
-                // title 기준 정렬
-                SortFactor.TITLE -> {
-                    _notes.value =
-                        if (sortType.value == SortType.ASC) sortByTitleAscUseCase()
-                        else sortByTitleDescUseCase()
-                }
-                // timestamp 기준 정렬
-                SortFactor.TIMESTAMP -> {
-                    _notes.value =
-                        if (sortType.value == SortType.ASC) sortByTimestampAscUseCase()
-                        else sortByTimestampDescUseCase()
-                }
-            }
-        }
+    fun getNotes() = viewModelScope.launch {
+        _notes.value = getNotesUseCase.invoke(
+            sortFactor.value ?: SortFactor.TIMESTAMP,
+            sortType.value ?: SortType.DESC
+        )
     }
 
     fun deleteNote(note: Note) = viewModelScope.launch {
@@ -63,12 +40,14 @@ class NotesViewModelFactory(
         if (modelClass.isAssignableFrom(NotesViewModel::class.java))
             return NotesViewModel(
                 DeleteNoteUseCase(repository),
-                SortByColorAscUseCase(repository),
-                SortByColorDescUseCase(repository),
-                SortByTimestampAscUseCase(repository),
-                SortByTimestampDescUseCase(repository),
-                SortByTitleAscUseCase(repository),
-                SortByTitleDescUseCase(repository)
+                GetNotesUseCase(
+                    SortByColorAscUseCase(repository),
+                    SortByColorDescUseCase(repository),
+                    SortByTimestampAscUseCase(repository),
+                    SortByTimestampDescUseCase(repository),
+                    SortByTitleAscUseCase(repository),
+                    SortByTitleDescUseCase(repository),
+                )
             ) as T
         else throw IllegalArgumentException()
     }
