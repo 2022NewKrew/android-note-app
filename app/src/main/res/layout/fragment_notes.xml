@@ -65,7 +65,6 @@
                 android:id="@+id/rb_base_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Title"
                 android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />
@@ -99,7 +98,6 @@
                 android:id="@+id/rb_mode_asc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Ascending"
                 android:textColor="@color/buttonWhite"
                 android:textSize="20sp" />

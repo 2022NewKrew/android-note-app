@@ -40,28 +40,17 @@ class AddEditNoteFragment : Fragment() {
         init(arguments)
 
         binding.rgSelectColor.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                binding.rbColor1.id -> {
-                    viewModel.currentNote = viewModel.currentNote.copy(color = COLOR_1)
-                    binding.clAddEditBackground.setBackgroundColor(Color.parseColor(COLOR_1))
+            viewModel.setNote(
+                color = when (checkedId) {
+                    binding.rbColor1.id -> COLOR_1
+                    binding.rbColor2.id -> COLOR_2
+                    binding.rbColor3.id -> COLOR_3
+                    binding.rbColor4.id -> COLOR_4
+                    binding.rbColor5.id -> COLOR_5
+                    else -> COLOR_1
                 }
-                binding.rbColor2.id -> {
-                    viewModel.currentNote = viewModel.currentNote.copy(color = COLOR_2)
-                    binding.clAddEditBackground.setBackgroundColor(Color.parseColor(COLOR_2))
-                }
-                binding.rbColor3.id -> {
-                    viewModel.currentNote = viewModel.currentNote.copy(color = COLOR_3)
-                    binding.clAddEditBackground.setBackgroundColor(Color.parseColor(COLOR_3))
-                }
-                binding.rbColor4.id -> {
-                    viewModel.currentNote = viewModel.currentNote.copy(color = COLOR_4)
-                    binding.clAddEditBackground.setBackgroundColor(Color.parseColor(COLOR_4))
-                }
-                binding.rbColor5.id -> {
-                    viewModel.currentNote = viewModel.currentNote.copy(color = COLOR_5)
-                    binding.clAddEditBackground.setBackgroundColor(Color.parseColor(COLOR_5))
-                }
-            }
+            )
+            binding.clAddEditBackground.setBackgroundColor((Color.parseColor(viewModel.getNote().color)))
         }
 
         binding.fabSaveNoteButton.setOnClickListener {
@@ -79,7 +68,11 @@ class AddEditNoteFragment : Fragment() {
                     Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                viewModel.currentNote = viewModel.currentNote.copy(title = title, content = content)
+                viewModel.setNote(
+                    title = title,
+                    content = content,
+                    timeStamp = Date().time,
+                )
                 viewModel.insert()
                 parentFragmentManager.commit {
                     replace(R.id.fragmentContainerView, NotesFragment())
@@ -91,16 +84,16 @@ class AddEditNoteFragment : Fragment() {
 
     private fun init(bundle: Bundle?) {
         if (bundle == null) {
-            viewModel.currentNote = Note()
+            viewModel.setNote(Note())
         } else {
-            viewModel.currentNote = bundle.getParcelable(NotesViewModel.NOTE_KEY) ?: Note()
+            viewModel.setNote(bundle.getParcelable(NotesFragment.NOTE_KEY) ?: Note())
         }
 
-        binding.etTitleInput.setText(viewModel.currentNote.title)
-        binding.etContentInput.setText(viewModel.currentNote.content)
-        binding.clAddEditBackground.setBackgroundColor(Color.parseColor(viewModel.currentNote.color))
+        binding.etTitleInput.setText(viewModel.getNote().title)
+        binding.etContentInput.setText(viewModel.getNote().content)
+        binding.clAddEditBackground.setBackgroundColor(Color.parseColor(viewModel.getNote().color))
 
-        when (viewModel.currentNote.color) {
+        when (viewModel.getNote().color) {
             COLOR_1 -> binding.rbColor1.isChecked = true
             COLOR_2 -> binding.rbColor2.isChecked = true
             COLOR_3 -> binding.rbColor3.isChecked = true
@@ -110,10 +103,10 @@ class AddEditNoteFragment : Fragment() {
     }
 
     companion object {
-        const val COLOR_1 = "#ffa288"
-        const val COLOR_2 = "#e3ec96"
-        const val COLOR_3 = "#c886d2"
-        const val COLOR_4 = "#76d9e6"
-        const val COLOR_5 = "#f282a5"
+        const val COLOR_1 = "#ffa288"   // -23928
+        const val COLOR_2 = "#e3ec96"   // -1839978
+        const val COLOR_3 = "#c886d2"   // -3635502
+        const val COLOR_4 = "#76d9e6"   // -8988186
+        const val COLOR_5 = "#f282a5"   // -884059
     }
 }

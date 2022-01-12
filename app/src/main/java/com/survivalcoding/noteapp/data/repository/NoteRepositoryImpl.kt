@@ -6,7 +6,7 @@ import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
 
 class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
-    override suspend fun getNotes(): List<Note> {
+    override fun getNotes(): Flow<List<Note>> {
         return noteDao.getAllNotes()
     }
 

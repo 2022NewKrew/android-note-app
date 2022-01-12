@@ -13,7 +13,6 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
-import java.util.*
 
 class NotesFragment : Fragment() {
 
@@ -30,7 +29,7 @@ class NotesFragment : Fragment() {
             },
             itemClickEvent = { note ->
                 val bundle = Bundle().apply {
-                    putParcelable(NotesViewModel.NOTE_KEY, note)
+                    putParcelable(NOTE_KEY, note)
                 }
                 parentFragmentManager.commit {
                     replace(
@@ -55,8 +54,6 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.refreshNoteList()
-
         initSortCondition()
 
         // 리사이클러뷰 연결
@@ -64,35 +61,36 @@ class NotesFragment : Fragment() {
 
         // title, timestamp, color 기준으로 정렬
         binding.rgSortBase.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.key = when (checkedId) {
-                binding.rbBaseTitle.id -> NotesViewModel.ORDER_TITLE
-                binding.rbBaseDate.id -> NotesViewModel.ORDER_TIMESTAMP
-                else -> NotesViewModel.ORDER_COLOR
+            val key = when (checkedId) {
+                binding.rbBaseTitle.id -> UiState.ORDER_TITLE
+                binding.rbBaseDate.id -> UiState.ORDER_TIMESTAMP
+                else -> UiState.ORDER_COLOR
             }
-            viewModel.sortNotes()
-            binding.rvNotesRecyclerView.scrollToPosition(-1)
+            viewModel.setUi(key = key)
+            noteListAdapter.submitSortedList(uiState = viewModel.getUiState())
         }
 
         // 오름차순, 내림차순 정렬
         binding.rgSortMode.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.mode = when (checkedId) {
-                binding.rbModeAsc.id -> NotesViewModel.ORDER_ASC
-                else -> NotesViewModel.ORDER_DESC
+            val mode = when (checkedId) {
+                binding.rbModeAsc.id -> UiState.ORDER_ASC
+                else -> UiState.ORDER_DESC
             }
-            viewModel.sortNotes()
-            binding.rvNotesRecyclerView.scrollToPosition(0)
+            viewModel.setUi(mode = mode)
+            noteListAdapter.submitSortedList(uiState = viewModel.getUiState())
         }
 
         // 정렬 기능 숨김 처리
-        binding.clSortCondition.visibility = viewModel.filter
+        binding.clSortCondition.visibility = viewModel.getUiState().sortVisible
 
         // 정렬 기능 표시/비표시
         binding.ivDrawerTrigger.setOnClickListener {
-            viewModel.filter =
-                if (binding.clSortCondition.isVisible) NotesViewModel.FILTER_CLOSE
-                else NotesViewModel.FILTER_OPEN
+            val isVisible =
+                if (binding.clSortCondition.isVisible) UiState.FILTER_CLOSE
+                else UiState.FILTER_OPEN
 
-            binding.clSortCondition.visibility = viewModel.filter
+            viewModel.setUi(isVisible = isVisible)
+            binding.clSortCondition.visibility = viewModel.getUiState().sortVisible
         }
 
         // 노트 추가 버튼 설정
@@ -104,18 +102,26 @@ class NotesFragment : Fragment() {
             }
         }
 
-        viewModel.notes.observe(this) { noteListAdapter.submitList(it) }
+        viewModel.notes.observe(this) {
+            noteListAdapter.submitSortedList(it, viewModel.getUiState())
+        }
     }
 
     private fun initSortCondition() {
-        when (viewModel.key) {
-            NotesViewModel.ORDER_TITLE -> binding.rbBaseTitle.isChecked = true
-            NotesViewModel.ORDER_TIMESTAMP -> binding.rbBaseDate.isChecked = true
-            NotesViewModel.ORDER_COLOR -> binding.rbBaseColor.isChecked = true
+        when (viewModel.getUiState().sortKey) {
+            UiState.ORDER_TITLE -> binding.rbBaseTitle.isChecked = true
+            UiState.ORDER_TIMESTAMP -> binding.rbBaseDate.isChecked = true
+            UiState.ORDER_COLOR -> binding.rbBaseColor.isChecked = true
+            else -> {}
         }
-        when (viewModel.mode) {
-            NotesViewModel.ORDER_ASC -> binding.rbModeAsc.isChecked = true
-            NotesViewModel.ORDER_DESC -> binding.rbModeDesc.isChecked = true
+        when (viewModel.getUiState().sortMode) {
+            UiState.ORDER_ASC -> binding.rbModeAsc.isChecked = true
+            UiState.ORDER_DESC -> binding.rbModeDesc.isChecked = true
+            else -> {}
         }
+    }
+
+    companion object {
+        const val NOTE_KEY = "note_key"
     }
 }
