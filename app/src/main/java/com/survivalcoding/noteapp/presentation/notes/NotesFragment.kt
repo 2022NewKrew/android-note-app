@@ -9,10 +9,14 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
+import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
+
 
 class NotesFragment : Fragment() {
     private var _binding: FragmentNotesBinding? = null
@@ -29,13 +33,25 @@ class NotesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //ToDo: RecyclerView 구현 및 관련 클래스 규정
+        val recyclerView = binding.recyclerView
+        val adapter = NoteListAdapter(onClickDeleteButton = { note ->
+            viewModel.deleteNote(note)
+            Snackbar.make(view, "노트 삭제", Snackbar.LENGTH_LONG)
+                .setAction("되돌리기") { viewModel.insertNote(note) }
+                .show()
+        }, onClickView = {
+            moveToAddEditNoteFragment(it.id)
+        })
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+        viewModel.notes.observe(this) {
+            adapter.submitList(it)
+        }
 
         val alignButton = binding.alignButton
         val filterLayout = binding.filterLayout
@@ -43,17 +59,22 @@ class NotesFragment : Fragment() {
             if (filterLayout.visibility == VISIBLE) filterLayout.visibility = GONE
             else filterLayout.visibility = VISIBLE
         }
+        //ToDo: 정렬 기능 구현
         val addButton = binding.addButton
         addButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container_view,
-                    AddEditNoteFragment().apply {
-                        this.arguments = bundleOf(MODIFY to -1)
-                    })
-                .addToBackStack(null)
-                .commit()
+            moveToAddEditNoteFragment()
         }
+    }
+
+    private fun moveToAddEditNoteFragment(id: Int = -1) {
+        parentFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container_view,
+                AddEditNoteFragment().apply {
+                    this.arguments = bundleOf(MODIFY to id)
+                })
+            .addToBackStack(null)
+            .commit()
     }
 
     companion object {

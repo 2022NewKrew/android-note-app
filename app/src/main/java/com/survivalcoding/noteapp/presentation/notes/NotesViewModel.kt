@@ -14,7 +14,6 @@ class NotesViewModel(
 ) : AndroidViewModel(application) {
     private var _notes: MutableLiveData<List<Note>> = MutableLiveData()
     val notes: LiveData<List<Note>> = _notes
-    private var deletedNote: Note? = null
 
     init {
         viewModelScope.launch {
@@ -36,26 +35,10 @@ class NotesViewModel(
             notesRepository.deleteNote(note)
             _notes.value = notesRepository.getNotes()
         }
-        deletedNote = note
-    }
-
-    fun restoreNote() {
-        viewModelScope.launch {
-            deletedNote?.let {
-                notesRepository.insertNote(it)
-                _notes.value = notesRepository.getNotes()
-            }
-        }
-        setDeletedNull()
-    }
-
-    fun setDeletedNull() {
-        deletedNote = null
     }
 
     fun sortNotes(filter: Int, sort: Int) {
         viewModelScope.launch {
-            val sortingNotes = _notes.value ?: notesRepository.getNotes()
             _notes.value = sortNotesUseCase.invoke(filter, sort)
         }
     }
@@ -70,7 +53,7 @@ class NotesViewModelFactory(
             return NotesViewModel(
                 application = application,
                 notesRepository = notesRepository,
-                sortNotesUseCase = SortNotesUseCase(repository = notesRepository)
+                sortNotesUseCase = SortNotesUseCase(notesRepository)
             ) as T
         else throw IllegalArgumentException()
     }

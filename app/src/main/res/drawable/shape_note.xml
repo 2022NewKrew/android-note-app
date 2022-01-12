@@ -1,6 +1,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!--Paper-Back-->
-    <item>
+    <item
+        android:id="@+id/main">
         <shape android:shape="rectangle">
             <solid android:color="#555555" />
             <size
@@ -16,7 +17,8 @@
     </item>
 
     <!--Fold-->
-    <item android:gravity="top|right">
+    <item android:gravity="top|right"
+        android:id="@+id/fold">
         <shape android:shape="rectangle">
             <size
                 android:width="30dp"
