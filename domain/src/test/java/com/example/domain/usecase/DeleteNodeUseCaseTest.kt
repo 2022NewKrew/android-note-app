@@ -1,19 +1,30 @@
+/*
 package com.example.domain.usecase
 
-import org.junit.Assert.*
-
+import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
+import java.util.*
 
+@RunWith(MockitoJUnitRunner::class)
 class DeleteNodeUseCaseTest {
 
-    @Before
-    fun setUp() {
-        
+
+    private val repositoryTest = DefaultRepositoryTest()
+    private val repository = repositoryTest.repository
+    private val deleteNodeUseCase = DeleteNodeUseCase(repository)
+
+    @Test
+    fun deleteTest() = runBlocking {
+        val randomIntList = (1..10).map { Random().nextInt(100) + 1 }.distinct()
+        //deleteNodeUseCase()
     }
+
 
     @After
     fun tearDown() {
-
+        //todo(something)
     }
-}
+}*/
