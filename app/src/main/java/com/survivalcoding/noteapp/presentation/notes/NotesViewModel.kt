@@ -2,6 +2,8 @@ package com.survivalcoding.noteapp.presentation.notes
 
 import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.model.SortFactor
+import com.survivalcoding.noteapp.domain.model.SortType
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import com.survivalcoding.noteapp.domain.usecase.*
 import kotlinx.coroutines.launch
@@ -17,30 +19,30 @@ class NotesViewModel(
 ) : ViewModel() {
     private val _notes = MutableLiveData<List<Note>>()
     val notes: LiveData<List<Note>> get() = _notes
-    private val _sortFactor = MutableLiveData(SORT_BY_TIMESTAMP)
-    val sortFactor: LiveData<String> get() = _sortFactor
-    private val _sortType = MutableLiveData(SORT_DESC)
-    val sortType: LiveData<String> get() = _sortType
+    private val _sortFactor = MutableLiveData(SortFactor.TIMESTAMP)
+    val sortFactor: LiveData<SortFactor> get() = _sortFactor
+    private val _sortType = MutableLiveData(SortType.DESC)
+    val sortType: LiveData<SortType> get() = _sortType
 
     fun getNotes() {
         viewModelScope.launch {
             when (sortFactor.value) {
                 // color 기준 정렬
-                SORT_BY_COLOR -> {
+                SortFactor.COLOR -> {
                     _notes.value =
-                        if (sortType.value.equals(SORT_ASC)) sortByColorAscUseCase()
+                        if (sortType.value == SortType.ASC) sortByColorAscUseCase()
                         else sortByColorDescUseCase()
                 }
                 // title 기준 정렬
-                SORT_BY_TITLE -> {
+                SortFactor.TITLE -> {
                     _notes.value =
-                        if (sortType.value.equals(SORT_ASC)) sortByTitleAscUseCase()
+                        if (sortType.value == SortType.ASC) sortByTitleAscUseCase()
                         else sortByTitleDescUseCase()
                 }
                 // timestamp 기준 정렬
-                SORT_BY_TIMESTAMP -> {
+                SortFactor.TIMESTAMP -> {
                     _notes.value =
-                        if (sortType.value.equals(SORT_ASC)) sortByTimestampAscUseCase()
+                        if (sortType.value == SortType.ASC) sortByTimestampAscUseCase()
                         else sortByTimestampDescUseCase()
                 }
             }
@@ -50,15 +52,6 @@ class NotesViewModel(
     fun deleteNote(note: Note) = viewModelScope.launch {
         deleteNoteUseCase(note)
         getNotes()
-    }
-
-    companion object {
-        const val SORT_ASC = "ASC"
-        const val SORT_DESC = "DESC"
-
-        const val SORT_BY_COLOR = "color"
-        const val SORT_BY_TITLE = "title"
-        const val SORT_BY_TIMESTAMP = "timestamp"
     }
 }
 
