@@ -6,7 +6,7 @@ enum class Order {
     DATE_ASC,
     DATE_DESC,
     COLOR_ASC,
-    COLOR_DSC;
+    COLOR_DESC;
 
     companion object {
         val defaultOrder get() = TITLE_ASC

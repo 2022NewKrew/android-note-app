@@ -1,25 +1,20 @@
 package com.survivalcoding.noteapp.data.data_source
 
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.model.Order
 
 class NoteRoomDataSource(private val noteDao: NoteDao) : NoteLocalDataSource {
 
-    override suspend fun getNotesOrderByTitleAsc() =
-        noteDao.getOrderByTitleAsc().map { convert(it) }
-
-    override suspend fun getNotesOrderByTitleDesc() =
-        noteDao.getOrderByTitleDesc().map { convert(it) }
-
-    override suspend fun getNotesOrderByDateAsc() = noteDao.getOrderByTimeAsc().map { convert(it) }
-
-    override suspend fun getNotesOrderByDateDesc() =
-        noteDao.getOrderByTimeDesc().map { convert(it) }
-
-    override suspend fun getNotesOrderByColorAsc() =
-        noteDao.getOrderByColorAsc().map { convert(it) }
-
-    override suspend fun getNotesOrderByColorDesc() =
-        noteDao.getOrderByColorDesc().map { convert(it) }
+    override suspend fun getSortedNotes(order: Order): List<Note> {
+        return when (order) {
+            Order.TITLE_ASC -> noteDao.getOrderByTitleAsc().map { convert(it) }
+            Order.TITLE_DESC -> noteDao.getOrderByTitleDesc().map { convert(it) }
+            Order.DATE_ASC -> noteDao.getOrderByTimeAsc().map { convert(it) }
+            Order.DATE_DESC -> noteDao.getOrderByTimeDesc().map { convert(it) }
+            Order.COLOR_ASC -> noteDao.getOrderByColorAsc().map { convert(it) }
+            Order.COLOR_DESC -> noteDao.getOrderByColorDesc().map { convert(it) }
+        }
+    }
 
     override suspend fun insertNote(note: Note) = noteDao.insert(convert(note))
 
