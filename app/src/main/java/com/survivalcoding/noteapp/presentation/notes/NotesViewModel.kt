@@ -4,6 +4,10 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
+import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.BY_COLOR
+import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.BY_DATE
+import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.BY_TITLE
+import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.SORT_ASC
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
@@ -33,7 +37,6 @@ class NotesViewModel(
         viewModelScope.launch {
             notesRepository.deleteNote(note)
             _notes.value = notesRepository.getNotes()
-
         }
         deletedNote = note
     }
@@ -54,14 +57,27 @@ class NotesViewModel(
 
     fun sortNotes(filter: Int, sort: Int) {
         viewModelScope.launch {
-            //ToDo: 소팅 기능 구현
             val sortingNotes = _notes.value ?: notesRepository.getNotes()
             _notes.value = sorting(sortingNotes, filter, sort)
         }
     }
 
     private fun sorting(sortingNotes: List<Note>, filter: Int, sort: Int): List<Note> {
-        return sortingNotes
+        return when (filter) {
+            BY_TITLE -> {
+                if (sort == SORT_ASC) sortingNotes.sortedBy { it.title }
+                else sortingNotes.sortedByDescending { it.title }
+            }
+            BY_DATE -> {
+                if (sort == SORT_ASC) sortingNotes.sortedBy { it.timestamp }
+                else sortingNotes.sortedByDescending { it.timestamp }
+            }
+            BY_COLOR -> {
+                if (sort == SORT_ASC) sortingNotes.sortedBy { it.color }
+                else sortingNotes.sortedByDescending { it.color }
+            }
+            else -> sortingNotes
+        }
     }
 }
 
