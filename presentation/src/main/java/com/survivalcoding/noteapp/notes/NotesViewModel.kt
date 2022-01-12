@@ -48,5 +48,4 @@ class NotesViewModelFactory(
             ) as T
         } else throw IllegalArgumentException()
     }
-
 }
