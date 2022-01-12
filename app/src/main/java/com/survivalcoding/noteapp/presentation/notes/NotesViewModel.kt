@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.model.SortFactor
 import com.survivalcoding.noteapp.domain.model.SortType
-import com.survivalcoding.noteapp.domain.repository.NoteRepository
 import com.survivalcoding.noteapp.domain.usecase.*
 import kotlinx.coroutines.launch
 
@@ -29,26 +28,5 @@ class NotesViewModel(
     fun deleteNote(note: Note) = viewModelScope.launch {
         deleteNoteUseCase(note)
         getNotes()
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class NotesViewModelFactory(
-    private val repository: NoteRepository
-) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NotesViewModel::class.java))
-            return NotesViewModel(
-                DeleteNoteUseCase(repository),
-                GetNotesUseCase(
-                    SortByColorAscUseCase(repository),
-                    SortByColorDescUseCase(repository),
-                    SortByTimestampAscUseCase(repository),
-                    SortByTimestampDescUseCase(repository),
-                    SortByTitleAscUseCase(repository),
-                    SortByTitleDescUseCase(repository),
-                )
-            ) as T
-        else throw IllegalArgumentException()
     }
 }
