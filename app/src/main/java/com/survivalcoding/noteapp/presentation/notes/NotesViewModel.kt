@@ -12,7 +12,7 @@ class NotesViewModel(
     private val notesRepository: NotesRepository,
     private val sortNotesUseCase: SortNotesUseCase,
 ) : AndroidViewModel(application) {
-    private var _notes: MutableLiveData<List<Note>> = MutableLiveData()
+    private var _notes = MutableLiveData<List<Note>>()
     val notes: LiveData<List<Note>> = _notes
 
     init {

@@ -38,6 +38,8 @@ class NotesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val recyclerView = binding.recyclerView
         val adapter = NoteListAdapter(onClickDeleteButton = { note ->
             viewModel.deleteNote(note)
@@ -47,8 +49,8 @@ class NotesFragment : Fragment() {
         }, onClickView = {
             moveToAddEditNoteFragment(it.id)
         })
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         viewModel.notes.observe(this) {
             adapter.submitList(it)
         }
@@ -86,5 +88,10 @@ class NotesFragment : Fragment() {
         const val BY_TITLE = 0
         const val BY_DATE = 1
         const val BY_COLOR = 2
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
