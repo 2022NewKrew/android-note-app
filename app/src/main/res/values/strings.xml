@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Note App</string>
+    <string name="hint_title">Enter title</string>
+    <string name="hint_content">Enter some content</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.survivalcoding.noteapp.App
@@ -36,6 +37,23 @@ class AddEditNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.titleEditText.doAfterTextChanged {
+            if (it == viewModel.editNoteUiState.value?.title) return@doAfterTextChanged
+
+            viewModel.setTitleText(it ?: return@doAfterTextChanged)
+        }
+
+        binding.contentEditText.doAfterTextChanged {
+            if (it == viewModel.editNoteUiState.value?.content) return@doAfterTextChanged
+
+            viewModel.setContentText(it ?: return@doAfterTextChanged)
+        }
+
+        binding.saveButton.setOnClickListener {
+            viewModel.saveNote()
+            parentFragmentManager.popBackStack()
+        }
     }
 
     companion object {

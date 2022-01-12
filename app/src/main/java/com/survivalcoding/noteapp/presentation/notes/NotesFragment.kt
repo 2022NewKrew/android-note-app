@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.survivalcoding.noteapp.App
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.domain.usecase.GetNotesByOrderUseCase
+import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 
 class NotesFragment : Fragment() {
 
@@ -22,6 +24,10 @@ class NotesFragment : Fragment() {
         FragmentNotesBinding.inflate(layoutInflater)
     }
 
+    private val noteListAdapter: NoteListAdapter by lazy {
+        NoteListAdapter()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,6 +38,28 @@ class NotesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.notesRecyclerView.adapter = noteListAdapter
+        binding.addButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container_view, AddEditNoteFragment.newInstance(null))
+                .addToBackStack(null)
+                .commit()
+        }
+
+        observe()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        viewModel.loadList()
+    }
+
+    private fun observe() {
+        viewModel.notesUiState.observe(this) {
+            noteListAdapter.submitList(it.noteList)
+        }
     }
 
     companion object {

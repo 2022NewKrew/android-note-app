@@ -16,10 +16,8 @@ class NotesViewModel(private val getNotesByOrderUseCase: GetNotesByOrderUseCase)
     private val _notesUiState = MutableLiveData<NotesUiState>()
     val notesUiState: LiveData<NotesUiState> = _notesUiState
 
-    init {
-        viewModelScope.launch {
-            _notesUiState.value = NotesUiState(noteList = getNotesByOrderUseCase(Order.defaultOrder), orderBy = Order.defaultOrder)
-        }
+    fun loadList() {
+        getNotesListOrderBy(notesUiState.value?.orderBy ?: Order.defaultOrder)
     }
 
     fun setOrder(order: Order) {
@@ -29,7 +27,10 @@ class NotesViewModel(private val getNotesByOrderUseCase: GetNotesByOrderUseCase)
 
     private fun getNotesListOrderBy(order: Order) {
         viewModelScope.launch {
-            _notesUiState.value = _notesUiState.value?.copy(noteList = getNotesByOrderUseCase(Order.defaultOrder), orderBy = order)
+            _notesUiState.value = NotesUiState(
+                noteList = getNotesByOrderUseCase(Order.defaultOrder),
+                orderBy = order
+            )
         }
     }
 
