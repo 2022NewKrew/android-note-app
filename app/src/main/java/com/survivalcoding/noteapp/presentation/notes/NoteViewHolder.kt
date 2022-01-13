@@ -15,12 +15,10 @@ class NoteViewHolder(private val binding: NoteListItemBinding) :
     fun bind(note: Note, onNoteClick: (Note) -> Unit, onDeleteButtonClick: (Note) -> Unit) {
         binding.titleTextView.text = note.title
         binding.contentTextView.text = note.content
-        binding.root.setBackgroundColor(
-            ResourcesCompat.getColor(
-                binding.root.resources,
-                color2ColorResourceId(Color.fromInt(note.color)),
-                null
-            )
+        binding.root.backgroundTintList = ResourcesCompat.getColorStateList(
+            binding.root.resources,
+            color2ColorResourceId(Color.fromInt(note.color)),
+            null
         )
         binding.root.setOnClickListener { onNoteClick(note) }
         binding.deleteButton.setOnClickListener { onDeleteButtonClick(note) }
