@@ -1,0 +1,53 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--Paper-Back-->
+    <item
+        android:id="@+id/main">
+        <shape android:shape="rectangle">
+            <solid android:color="#555555" />
+            <size
+                android:width="300dp"
+                android:height="100dp" />
+            <corners
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="10dp"
+                android:topLeftRadius="10dp"
+                android:topRightRadius="10dp" />
+
+        </shape>
+    </item>
+
+    <!--Fold-->
+    <item android:gravity="top|right"
+        android:id="@+id/fold">
+        <shape android:shape="rectangle">
+            <size
+                android:width="30dp"
+                android:height="30dp" />
+            <solid android:color="#000000" />
+            <corners
+                android:bottomLeftRadius="10dp"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="10dp" />
+        </shape>
+    </item>
+    <item
+        android:gravity="top|right"
+        android:right="-21.21dp"
+        android:top="-21.21dp">
+        <rotate
+            android:fromDegrees="45"
+            android:pivotX="50%"
+            android:pivotY="50%">
+            <shape android:shape="rectangle">
+                <size
+                    android:width="42.42dp"
+                    android:height="42.42dp" />
+                <solid android:color="@color/background_color" />
+            </shape>
+        </rotate>
+    </item>
+
+
+    <!--Fold End-->
+</layer-list>
