@@ -36,7 +36,7 @@ class NotesViewModel(
     private fun getNotesListOrderBy(order: Order) {
         viewModelScope.launch {
             _notesUiState.value = NotesUiState(
-                noteList = getNotesByOrderUseCase(Order.defaultOrder),
+                noteList = getNotesByOrderUseCase(order),
                 orderBy = order
             )
         }

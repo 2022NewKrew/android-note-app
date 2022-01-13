@@ -6,4 +6,9 @@
     <string name="note_deleted">Note deleted</string>
     <string name="title_empty">The title of the note can\'t not be empty</string>
     <string name="content_empty">The content of the note can\'t not be empty</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="color">Color</string>
 </resources>

@@ -14,6 +14,7 @@ import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.model.Order
 import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
 import com.survivalcoding.noteapp.domain.usecase.GetNotesByOrderUseCase
 import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
@@ -56,14 +57,36 @@ class NotesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.notesRecyclerView.adapter = noteListAdapter
+
         binding.addButton.setOnClickListener { viewModel.navigateToAddNote() }
 
+        binding.sortByRadioGroup.setOnCheckedChangeListener { _, _ -> sortNotes() }
+        binding.sortOrderRadioGroup.setOnCheckedChangeListener { _, _ -> sortNotes() }
+
         observe()
+    }
+
+    private fun sortNotes() {
+        val isAscending =
+            binding.sortOrderRadioGroup.checkedRadioButtonId == R.id.ascending_radio_button
+
+        when (binding.sortByRadioGroup.checkedRadioButtonId) {
+            R.id.title_radio_button -> {
+                viewModel.setOrder(if (isAscending) Order.TITLE_ASC else Order.TITLE_DESC)
+            }
+            R.id.date_radio_button -> {
+                viewModel.setOrder(if (isAscending) Order.DATE_ASC else Order.DATE_DESC)
+            }
+            R.id.color_radio_button -> {
+                viewModel.setOrder(if (isAscending) Order.COLOR_ASC else Order.COLOR_DESC)
+            }
+        }
     }
 
     private fun observe() {
         viewModel.notesUiState.observe(this) {
             noteListAdapter.submitList(it.noteList)
+            setSelectedOrderRadioButton(it.orderBy)
         }
 
         repeatOnStart {
@@ -74,6 +97,26 @@ class NotesFragment : Fragment() {
     private fun repeatOnStart(block: suspend CoroutineScope.() -> Unit) {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED, block)
+        }
+    }
+
+    private fun setSelectedOrderRadioButton(order: Order) {
+        if (Order.isAsc(order)) {
+            binding.ascendingRadioButton.isChecked = true
+        } else {
+            binding.descendingRadioButton.isChecked = true
+        }
+
+        when (order) {
+            Order.COLOR_DESC, Order.COLOR_ASC -> {
+                binding.colorRadioButton.isChecked = true
+            }
+            Order.DATE_DESC, Order.DATE_ASC -> {
+                binding.dateRadioButton.isChecked = true
+            }
+            Order.TITLE_DESC, Order.TITLE_ASC -> {
+                binding.titleRadioButton.isChecked = true
+            }
         }
     }
 
