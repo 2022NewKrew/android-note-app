@@ -35,7 +35,10 @@ class NotesFragment : Fragment() {
     }
 
     private val noteListAdapter: NoteListAdapter by lazy {
-        NoteListAdapter { note -> viewModel.deleteNote(note) }
+        NoteListAdapter(
+            { note -> viewModel.navigateToEditNote(note) },
+            { note -> viewModel.deleteNote(note) }
+        )
     }
 
     override fun onCreateView(
@@ -87,7 +90,7 @@ class NotesFragment : Fragment() {
 
     private fun navigateToEditNote(note: Note) {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container_view, AddEditNoteFragment.newInstance(null))
+            .replace(R.id.fragment_container_view, AddEditNoteFragment.newInstance(note))
             .addToBackStack(null)
             .commit()
     }

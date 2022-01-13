@@ -4,14 +4,11 @@ import android.text.Editable
 import androidx.lifecycle.*
 import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.domain.model.Note
-import com.survivalcoding.noteapp.domain.repository.NoteRepository
-import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
 import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
-    private val insertNoteUseCase: InsertNoteUseCase,
-    private val deleteNoteUseCase: DeleteNoteUseCase
+    private val insertNoteUseCase: InsertNoteUseCase
 ) : ViewModel() {
 
     private var id = -1
@@ -59,7 +56,7 @@ class AddEditNoteViewModel(
 
     private fun modifyNote(editNoteUiState: EditNoteUiState) {
         viewModelScope.launch {
-            deleteNoteUseCase(
+            insertNoteUseCase(
                 Note(
                     id = id,
                     title = editNoteUiState.title.toString(),
@@ -77,14 +74,11 @@ class AddEditNoteViewModel(
 }
 
 @Suppress("UNCHECKED_CAST")
-class AddEditNoteViewModelFactory(
-    private val insertNoteUseCase: InsertNoteUseCase,
-    private val deleteNoteUseCase: DeleteNoteUseCase
-) :
+class AddEditNoteViewModelFactory(private val insertNoteUseCase: InsertNoteUseCase) :
     ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddEditNoteViewModel::class.java)) {
-            return AddEditNoteViewModel(insertNoteUseCase, deleteNoteUseCase) as T
+            return AddEditNoteViewModel(insertNoteUseCase) as T
         } else {
             throw IllegalArgumentException()
         }

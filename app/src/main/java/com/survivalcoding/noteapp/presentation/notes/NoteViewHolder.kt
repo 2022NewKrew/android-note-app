@@ -12,7 +12,7 @@ import com.survivalcoding.noteapp.presentation.color2ColorResourceId
 class NoteViewHolder(private val binding: NoteListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(note: Note, onDeleteButtonClick: (Note) -> Unit) {
+    fun bind(note: Note, onNoteClick: (Note) -> Unit, onDeleteButtonClick: (Note) -> Unit) {
         binding.titleTextView.text = note.title
         binding.contentTextView.text = note.content
         binding.root.setBackgroundColor(
@@ -22,6 +22,7 @@ class NoteViewHolder(private val binding: NoteListItemBinding) :
                 null
             )
         )
+        binding.root.setOnClickListener { onNoteClick(note) }
         binding.deleteButton.setOnClickListener { onDeleteButtonClick(note) }
     }
 
