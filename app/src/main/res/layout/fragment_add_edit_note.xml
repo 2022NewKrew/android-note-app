@@ -97,6 +97,8 @@
         android:layout_margin="16dp"
         android:background="@null"
         android:hint="@string/hint_title"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/color_radio_group" />
@@ -109,6 +111,8 @@
         android:background="@null"
         android:gravity="top"
         android:hint="@string/hint_content"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
