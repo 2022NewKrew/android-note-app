@@ -1,0 +1,16 @@
+#!/bin/sh
+# place this file in .git/hooks
+
+echo "analyzing"
+
+./gradlew ktlintCheck detekt
+
+status=$?
+
+if [ "$status" = 0 ] ; then
+    echo "no issues"
+    exit 0
+else
+    echo 1>&2 "issue found, commit aborted"
+    exit 1
+fi
