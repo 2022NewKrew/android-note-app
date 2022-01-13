@@ -81,7 +81,13 @@ class NotesFragment : Fragment() {
         when (event) {
             is NotesViewModel.Event.NavigateToEditNote -> navigateToEditNote(event.note)
             is NotesViewModel.Event.NavigateToAddNote -> navigateToAddNote()
-            is NotesViewModel.Event.ShowSnackBarEvent -> showSnackBar(event.messageResourceId, event.actionTextResourceId, event.action)
+            is NotesViewModel.Event.ShowSnackBarEvent -> {
+                showSnackBar(
+                    event.messageResourceId,
+                    event.actionTextResourceId,
+                    event.action
+                )
+            }
         }
     }
 
@@ -99,7 +105,11 @@ class NotesFragment : Fragment() {
             .commit()
     }
 
-    private fun showSnackBar(messageResourceId: Int, actionTextResourceId: Int?, action: View.OnClickListener?) {
+    private fun showSnackBar(
+        messageResourceId: Int,
+        actionTextResourceId: Int?,
+        action: View.OnClickListener?
+    ) {
         val snackBar = Snackbar.make(binding.root, messageResourceId, Snackbar.LENGTH_SHORT)
         if (actionTextResourceId != null && action != null) {
             snackBar.setAction(actionTextResourceId, action)

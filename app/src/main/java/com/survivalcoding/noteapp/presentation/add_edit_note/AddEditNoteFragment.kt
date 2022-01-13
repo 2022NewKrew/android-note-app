@@ -11,6 +11,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentAddEditNoteBinding
@@ -18,6 +22,9 @@ import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
 import com.survivalcoding.noteapp.presentation.color2ColorResourceId
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class AddEditNoteFragment : Fragment() {
 
@@ -66,7 +73,6 @@ class AddEditNoteFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             viewModel.saveNote()
-            parentFragmentManager.popBackStack()
         }
 
         binding.colorRadioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -91,6 +97,45 @@ class AddEditNoteFragment : Fragment() {
             setSelectedColorButton(it.color)
             setBackgroundColor(it.color)
         }
+
+        repeatOnStart {
+            viewModel.eventFlow.collect { handleEvent(it) }
+        }
+    }
+
+    private fun handleEvent(event: AddEditNoteViewModel.Event) {
+        when (event) {
+            is AddEditNoteViewModel.Event.ShowSnackBarEvent -> {
+                showSnackBar(
+                    event.messageResourceId,
+                    event.actionTextResourceId,
+                    event.action
+                )
+            }
+            is AddEditNoteViewModel.Event.NavigateToNotesEvent -> navigateToNote()
+        }
+    }
+
+    private fun repeatOnStart(block: suspend CoroutineScope.() -> Unit) {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED, block)
+        }
+    }
+
+    private fun navigateToNote() {
+        parentFragmentManager.popBackStack()
+    }
+
+    private fun showSnackBar(
+        messageResourceId: Int,
+        actionTextResourceId: Int?,
+        action: View.OnClickListener?
+    ) {
+        val snackBar = Snackbar.make(binding.root, messageResourceId, Snackbar.LENGTH_SHORT)
+        if (actionTextResourceId != null && action != null) {
+            snackBar.setAction(actionTextResourceId, action)
+        }
+        snackBar.show()
     }
 
     private fun setTitleText(title: Editable) {

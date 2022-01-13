@@ -1,10 +1,14 @@
 package com.survivalcoding.noteapp.presentation.add_edit_note
 
 import android.text.Editable
+import android.view.View
 import androidx.lifecycle.*
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
@@ -14,6 +18,9 @@ class AddEditNoteViewModel(
     private var id = -1
     private val mode: Mode
         get() = if (id == -1) Mode.CREATE_MODE else Mode.EDIT_MODE
+
+    private val _eventFlow = MutableSharedFlow<Event>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private val _editNoteUiState = MutableLiveData(EditNoteUiState(color = Color.defaultColor))
     val editNoteUiState: LiveData<EditNoteUiState> = _editNoteUiState
@@ -35,11 +42,22 @@ class AddEditNoteViewModel(
     }
 
     fun saveNote() {
+        if (editNoteUiState.value?.title.isNullOrBlank()) {
+            sendEvent(Event.ShowSnackBarEvent(R.string.title_empty, null, null))
+            return
+        }
+        if (editNoteUiState.value?.content.isNullOrBlank()) {
+            sendEvent(Event.ShowSnackBarEvent(R.string.content_empty, null, null))
+            return
+        }
+
         if (mode == Mode.CREATE_MODE) {
             addNote(editNoteUiState.value ?: return)
         } else {
             modifyNote(editNoteUiState.value ?: return)
         }
+
+        sendEvent(Event.NavigateToNotesEvent)
     }
 
     private fun addNote(editNoteUiState: EditNoteUiState) {
@@ -67,9 +85,24 @@ class AddEditNoteViewModel(
         }
     }
 
+    private fun sendEvent(event: Event) {
+        viewModelScope.launch {
+            _eventFlow.emit(event)
+        }
+    }
+
     enum class Mode {
         EDIT_MODE,
         CREATE_MODE
+    }
+
+    sealed class Event {
+        object NavigateToNotesEvent: Event()
+        class ShowSnackBarEvent(
+            val messageResourceId: Int,
+            val actionTextResourceId: Int?,
+            val action: View.OnClickListener?
+        ) : Event()
     }
 }
 
