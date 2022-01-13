@@ -13,6 +13,7 @@ import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
 import com.survivalcoding.noteapp.domain.usecase.GetNotesByOrderUseCase
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 import kotlinx.coroutines.CoroutineScope
@@ -22,8 +23,10 @@ import kotlinx.coroutines.launch
 class NotesFragment : Fragment() {
 
     private val viewModel: NotesViewModel by viewModels {
+        val noteRepository = (requireActivity().application as App).noteRepository
         NotesViewModelFactory(
-            GetNotesByOrderUseCase((requireActivity().application as App).noteRepository)
+            GetNotesByOrderUseCase(noteRepository),
+            DeleteNoteUseCase(noteRepository)
         )
     }
 
@@ -32,7 +35,7 @@ class NotesFragment : Fragment() {
     }
 
     private val noteListAdapter: NoteListAdapter by lazy {
-        NoteListAdapter()
+        NoteListAdapter { note -> viewModel.deleteNote(note) }
     }
 
     override fun onCreateView(
