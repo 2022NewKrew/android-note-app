@@ -34,6 +34,14 @@ class NotesViewModel(private val getNotesByOrderUseCase: GetNotesByOrderUseCase)
         }
     }
 
+    fun navigateToAddNote() {
+        sendEvent(Event.NavigateToAddNote)
+    }
+
+    fun navigateToEditNote(note: Note) {
+        sendEvent(Event.NavigateToEditNote(note))
+    }
+
     private fun sendEvent(event: Event) {
         viewModelScope.launch {
             _eventFlow.emit(event)
@@ -41,8 +49,8 @@ class NotesViewModel(private val getNotesByOrderUseCase: GetNotesByOrderUseCase)
     }
 
     sealed class Event {
-        class NavigateToEditNote(val note: Note)
-        class NavigateToAddNote
+        class NavigateToEditNote(val note: Note): Event()
+        object NavigateToAddNote : Event()
     }
 }
 
