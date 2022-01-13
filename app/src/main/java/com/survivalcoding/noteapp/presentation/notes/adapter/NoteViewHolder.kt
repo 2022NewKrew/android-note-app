@@ -13,7 +13,12 @@ class NoteViewHolder(
     fun bind(note: Note) {
         binding.noteTvTitle.text = note.title
         binding.noteTvContent.text = note.content
-        binding.root.setBackgroundColor(note.color)
+        binding.root.setBackgroundColor(
+            binding.root.context.resources.getColor(
+                note.color,
+                binding.root.context.theme
+            )
+        )
 
         binding.noteIvDelete.setOnClickListener { deleteClickListener(note) }
         binding.root.setOnClickListener { itemClickListener(note) }
