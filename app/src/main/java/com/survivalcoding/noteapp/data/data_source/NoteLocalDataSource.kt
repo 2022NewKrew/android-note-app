@@ -1,9 +1,9 @@
-package com.survivalcoding.noteapp.domain.repository
+package com.survivalcoding.noteapp.data.data_source
 
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.model.Order
 
-interface NoteRepository {
+interface NoteLocalDataSource {
     suspend fun getSortedNotes(order: Order): List<Note>
 
     suspend fun insertNote(note: Note)
