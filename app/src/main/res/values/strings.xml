@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Note App</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="notes_title">Your note</string>
+    <string name="notes_sort_button">정렬 버튼</string>
+    <string name="note_add_button">노트 추가 버튼</string>
+    <string name="note_delete_button">노트 삭제 버튼</string>
 </resources>
