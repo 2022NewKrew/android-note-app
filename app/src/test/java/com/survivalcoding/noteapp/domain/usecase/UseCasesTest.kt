@@ -1,10 +1,11 @@
 package com.survivalcoding.noteapp.domain.usecase
 
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.model.NoteColor
+import com.survivalcoding.noteapp.domain.model.SortKey
+import com.survivalcoding.noteapp.domain.model.SortMode
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 
@@ -16,15 +17,18 @@ import java.util.*
 class UseCasesTest {
     private lateinit var repository: NoteRepository
     private lateinit var deleteNoteUseCase: DeleteNoteUseCase
-    private lateinit var getNotesUseCase: GetNotesUseCase
+    private lateinit var getSortedNotesUseCase: GetSortedNotesUseCase
     private lateinit var insertNoteUseCase: InsertNoteUseCase
+
+    private val _sortKey = MutableStateFlow(SortKey.TITLE)
+    private val _sortMode = MutableStateFlow(SortMode.ASCENDING)
 
     @Before
     fun setUp() {
         repository = object : NoteRepository {
             private var list = mutableListOf<Note>(
-                Note(1, "note1", "note content1", Date().time, color = "#1d1d1d"),
-                Note(2, "note2", "note content2", Date().time, color = "#1d1d1d"),
+                Note(1, "note1", "note content1", Date().time, NoteColor.COLOR_1),
+                Note(2, "note2", "note content2", Date().time, NoteColor.COLOR_3),
             )
 
             override fun getNotes(): Flow<List<Note>> = flow { emit(list) }
@@ -38,7 +42,7 @@ class UseCasesTest {
             }
         }
         deleteNoteUseCase = DeleteNoteUseCase(repository)
-        getNotesUseCase = GetNotesUseCase(repository)
+        getSortedNotesUseCase = GetSortedNotesUseCase(repository)
         insertNoteUseCase = InsertNoteUseCase(repository)
     }
 
@@ -48,7 +52,7 @@ class UseCasesTest {
 
     @Test
     operator fun invoke() = runBlocking {
-        val list = getNotesUseCase()
+        val list = getSortedNotesUseCase(_sortKey.map { it.toComparator() }, _sortMode)
         assertEquals(2, list.first().size)
         deleteNoteUseCase(Note(id = 1))
         assertEquals(1, list.first().size)

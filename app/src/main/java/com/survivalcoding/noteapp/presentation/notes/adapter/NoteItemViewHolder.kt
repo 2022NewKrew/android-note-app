@@ -1,6 +1,5 @@
 package com.survivalcoding.noteapp.presentation.notes.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +19,7 @@ class NoteItemViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     ) {
         binding.tvNoteTitle.text = currentNote.title
         binding.tvNoteContent.text = currentNote.content
-        binding.cvItem.setCardBackgroundColor(Color.parseColor(currentNote.color))
+        binding.cvItem.setCardBackgroundColor(currentNote.color.toInt())
 
         itemView.setOnClickListener {
             itemClickEvent(currentNote)

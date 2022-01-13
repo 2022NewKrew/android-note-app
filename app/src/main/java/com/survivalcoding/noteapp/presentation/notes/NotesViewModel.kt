@@ -1,48 +1,63 @@
 package com.survivalcoding.noteapp.presentation.notes
 
-import androidx.lifecycle.*
+import android.view.View
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.survivalcoding.noteapp.domain.model.Note
-import com.survivalcoding.noteapp.domain.repository.NoteRepository
+import com.survivalcoding.noteapp.domain.model.SortKey
+import com.survivalcoding.noteapp.domain.model.SortMode
+import com.survivalcoding.noteapp.domain.model.UIState
 import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
-import com.survivalcoding.noteapp.domain.usecase.GetNotesUseCase
+import com.survivalcoding.noteapp.domain.usecase.GetSortedNotesUseCase
+import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
-    getNotesUseCase: GetNotesUseCase,
+    getSortedNotesUseCase: GetSortedNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val insertNoteUseCase: InsertNoteUseCase,
 ) : ViewModel() {
-    private var _uiState = UiState()
-    val notes: LiveData<List<Note>> = getNotesUseCase().asLiveData()
+    private val _sortKey = MutableStateFlow(SortKey.TITLE)
+    private val _sortMode = MutableStateFlow(SortMode.ASCENDING)
+    private val _notes = getSortedNotesUseCase(_sortKey.map { it.toComparator() }, _sortMode)
+
+    private val _deletedNote = MutableStateFlow<Note?>(null)
+
+    private val _visibility = MutableStateFlow(View.GONE)
+
+    val uiState = combine(
+        _sortKey, _sortMode, _notes, _visibility
+    ) { sortKey, sortMode, notes, visibility ->
+        UIState(sortKey, sortMode, notes, visibility)
+    }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             deleteNoteUseCase(note)
+            _deletedNote.value = note
         }
     }
 
-    fun setUi(
-        key: String? = null,
-        mode: Int? = null,
-        isVisible: Int? = null,
-    ) {
-        key?.let { _uiState = _uiState.copy(sortKey = key) }
-        mode?.let { _uiState = _uiState.copy(sortMode = mode) }
-        isVisible?.let { _uiState = _uiState.copy(sortVisible = isVisible) }
+    fun undoDelete() {
+        viewModelScope.launch {
+            _deletedNote.value?.let { insertNoteUseCase(it) }
+            _deletedNote.value = null
+        }
     }
 
-    fun getUiState() = _uiState
-}
+    fun setSortKey(key: SortKey) {
+        _sortKey.value = key
+    }
 
-@Suppress("UNCHECKED_CAST")
-class NotesViewModelFactory(
-    private val repository: NoteRepository,
-) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NotesViewModel::class.java))
-            return NotesViewModel(
-                getNotesUseCase = GetNotesUseCase(repository),
-                deleteNoteUseCase = DeleteNoteUseCase(repository),
-            ) as T
-        else throw IllegalArgumentException()
+    fun setSortMode(mode: SortMode) {
+        _sortMode.value = mode
+    }
+
+    fun setVisibility(visibility: Int) {
+        _visibility.value = visibility
     }
 }
+
