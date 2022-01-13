@@ -15,14 +15,14 @@ class GetNotesUseCase(
     ): Flow<List<Note>> {
         return repository.getNotes().map { notes ->
             when (noteOrder.orderType) {
-                OrderType.Ascending -> {
+                is OrderType.Ascending -> {
                     when (noteOrder) {
                         is NoteOrder.Color -> notes.sortedBy { it.color }
                         is NoteOrder.Date -> notes.sortedBy { it.timestamp }
                         is NoteOrder.Title -> notes.sortedBy { it.title }
                     }
                 }
-                OrderType.Descending -> {
+                is OrderType.Descending -> {
                     when (noteOrder) {
                         is NoteOrder.Color -> notes.sortedByDescending { it.color }
                         is NoteOrder.Date -> notes.sortedByDescending { it.timestamp }
