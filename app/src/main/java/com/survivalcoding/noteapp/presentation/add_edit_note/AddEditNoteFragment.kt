@@ -17,6 +17,7 @@ import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
 import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
+import com.survivalcoding.noteapp.presentation.color2ColorResourceId
 
 class AddEditNoteFragment : Fragment() {
 
@@ -94,14 +95,13 @@ class AddEditNoteFragment : Fragment() {
     }
 
     private fun setBackgroundColor(color: Color) {
-        val colorResourceId = when (color) {
-            Color.YELLOW -> R.color.yellow
-            Color.BLUE -> R.color.blue
-            Color.LAVENDER -> R.color.lavender
-            Color.PURPLE -> R.color.purple
-            Color.RED -> R.color.red
-        }
-        binding.root.setBackgroundColor(ResourcesCompat.getColor(resources, colorResourceId, null))
+        binding.root.setBackgroundColor(
+            ResourcesCompat.getColor(
+                resources,
+                color2ColorResourceId(color),
+                null
+            )
+        )
     }
 
     override fun onStart() {
