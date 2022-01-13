@@ -12,7 +12,7 @@ class AddEditNoteViewModel(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private val _addEditNote = MutableLiveData<Note>()
+    private val _addEditNote = MutableLiveData(Note(color = 0))
     val addEditNote: LiveData<Note> get() = _addEditNote
 
     init {
@@ -27,8 +27,7 @@ class AddEditNoteViewModel(
 
     fun getNote(): LiveData<Note> = addEditNote
 
-    fun changeColor(color: Int) {
-        // note = note.copy(color = color)
+    fun updateColor(color: Int) {
         _addEditNote.value?.let {
             _addEditNote.value = it.copy(color = color)
         }

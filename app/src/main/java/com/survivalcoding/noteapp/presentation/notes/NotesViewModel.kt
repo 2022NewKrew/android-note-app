@@ -2,6 +2,7 @@ package com.survivalcoding.noteapp.presentation.notes
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
 import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase
@@ -13,11 +14,22 @@ class NotesViewModel(
     private val sortNotesUseCase: SortNotesUseCase,
 ) : AndroidViewModel(application) {
     private var _notes = MutableLiveData<List<Note>>()
-    val notes: LiveData<List<Note>> = _notes
+    val notes: LiveData<List<Note>> get() = _notes
+
+    private var _filter = MutableLiveData<Int>()
+    val filter: LiveData<Int> get() = _filter
+
+    private var _sort = MutableLiveData<Int>()
+    val sort: LiveData<Int> get() = _sort
 
     init {
         viewModelScope.launch {
-            _notes.value = notesRepository.getNotes()
+            _filter.value = R.id.dateButton
+            _sort.value = R.id.descendingButton
+            _notes.value = sortNotesUseCase.invoke(
+                getValueFromFilterId(_filter.value!!),
+                getValueFromSortId(_sort.value!!)
+            )
         }
     }
 
@@ -26,21 +38,55 @@ class NotesViewModel(
     fun insertNote(note: Note) {
         viewModelScope.launch {
             notesRepository.insertNote(note)
-            _notes.value = notesRepository.getNotes()
+            _notes.value = sortNotesUseCase.invoke(
+                getValueFromFilterId(_filter.value!!),
+                getValueFromSortId(_sort.value!!)
+            )
         }
     }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             notesRepository.deleteNote(note)
-            _notes.value = notesRepository.getNotes()
+            _notes.value = sortNotesUseCase.invoke(
+                getValueFromFilterId(_filter.value!!),
+                getValueFromSortId(_sort.value!!)
+            )
         }
     }
 
-    fun sortNotes(filter: Int, sort: Int) {
+    fun updateFilter(filter: Int) {
+        _filter.value = filter
+    }
+
+    fun updateSort(sort: Int) {
+        _sort.value = sort
+    }
+
+    fun sortNotes() {
         viewModelScope.launch {
-            _notes.value = sortNotesUseCase.invoke(filter, sort)
+            _notes.value = sortNotesUseCase.invoke(
+                getValueFromFilterId(_filter.value!!),
+                getValueFromSortId(_sort.value!!)
+            )
         }
+    }
+}
+
+private fun getValueFromSortId(checkedId: Int): Int {
+    return when (checkedId) {
+        R.id.ascendingButton -> SortNotesUseCase.SORT_ASC
+        R.id.descendingButton -> SortNotesUseCase.SORT_DESC
+        else -> -1
+    }
+}
+
+private fun getValueFromFilterId(checkedId: Int): Int {
+    return when (checkedId) {
+        R.id.titleButton -> SortNotesUseCase.BY_TITLE
+        R.id.dateButton -> SortNotesUseCase.BY_DATE
+        R.id.colorButton -> SortNotesUseCase.BY_COLOR
+        else -> -1
     }
 }
 

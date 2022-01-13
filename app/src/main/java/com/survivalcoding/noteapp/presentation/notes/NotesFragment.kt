@@ -51,9 +51,6 @@ class NotesFragment : Fragment() {
         })
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        viewModel.notes.observe(this) {
-            adapter.submitList(it)
-        }
 
         val alignButton = binding.alignButton
         val filterLayout = binding.filterLayout
@@ -61,12 +58,38 @@ class NotesFragment : Fragment() {
             if (filterLayout.visibility == VISIBLE) filterLayout.visibility = GONE
             else filterLayout.visibility = VISIBLE
         }
-        //ToDo: 정렬 기능 구현
+
+        val filterRadioGroup = binding.filterRadioGroup
+        val sortRadioGroup = binding.sortRadioGroup
+
+        filterRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            viewModel.updateFilter(checkedId)
+            viewModel.sortNotes()
+        }
+        sortRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            viewModel.updateSort(checkedId)
+            viewModel.sortNotes()
+        }
+
+        viewModel.notes.observe(this) {
+            adapter.submitList(it)
+        }
+
+        viewModel.filter.observe(this) {
+            filterRadioGroup.check(it)
+        }
+
+        viewModel.sort.observe(this) {
+            sortRadioGroup.check(it)
+        }
+
+
         val addButton = binding.addButton
         addButton.setOnClickListener {
             moveToAddEditNoteFragment()
         }
     }
+
 
     private fun moveToAddEditNoteFragment(id: Int = -1) {
         parentFragmentManager.beginTransaction()
