@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,6 +20,8 @@ import com.survivalcoding.noteapp.notes.adapter.NoteListAdapter
 import com.survivalcoding.noteapp.notes.adapter.NoteSwipeHandler
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModel
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModelFactory
+import com.google.android.material.snackbar.Snackbar
+
 
 class MainFragment : Fragment() {
 
@@ -46,6 +46,12 @@ class MainFragment : Fragment() {
             )
         ).get(NotesViewModel::class.java)
 
+        // snakbar setting
+        val snackBar = Snackbar.make(
+            binding.root,
+            "cancel delete",
+            Snackbar.LENGTH_SHORT
+        )
         val adapter = NoteListAdapter(
             onLongClicked = { note ->
                 setFragmentResult(MainActivity.FRAGMENT_KEY, bundleOf("note" to note))
@@ -55,9 +61,22 @@ class MainFragment : Fragment() {
                 }
             },
             onLeftSwiped = { note ->
-                viewModel.deleteNote(note)
+                // delete confirm
+                snackBar.addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                        if (event != DISMISS_EVENT_ACTION) {
+                            viewModel.deleteNote(note)
+                        }
+                    }
+                })
+                snackBar.show()
             }
         )
+
+        snackBar.setAction("cancel") {
+            adapter.unDoDelete()
+        }
 
         binding.noteListView.layoutManager = LinearLayoutManager(requireContext())
         binding.noteListView.adapter = adapter
@@ -72,7 +91,8 @@ class MainFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             parentFragmentManager.commit {
-                add<EditFragment>(R.id.fragment_container_view)
+                replace<EditFragment>(R.id.fragment_container_view)
+                setReorderingAllowed(true)
                 addToBackStack(null)
             }
         }
@@ -109,6 +129,10 @@ class MainFragment : Fragment() {
 
             }
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        println("Destroy")
     }
 }

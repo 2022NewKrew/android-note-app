@@ -10,6 +10,8 @@ class NoteListAdapter(
 ) :
     ListAdapter<Note, NoteViewHolder>(NoteDiffItemCallback) {
 
+    private var tmpItem: Note? = null
+    private var tmpPosition: Int? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder =
         NoteViewHolder.builder(parent)
 
@@ -19,7 +21,22 @@ class NoteListAdapter(
 
     fun removeItem(position: Int) {
         if (position >= itemCount) return
-        onLeftSwiped(currentList.toMutableList()[position])
+        tmpPosition = position
+        tmpItem = currentList[position]
+        onLeftSwiped(currentList[position])
+        submitList(currentList.toMutableList().filter {
+            it.id != tmpItem!!.id
+        })
+    }
+
+    fun unDoDelete() {
+        if (tmpPosition != null && tmpItem != null) {
+            submitList(currentList.toMutableList().apply {
+                add(tmpPosition!!, tmpItem)
+            })
+            tmpPosition = null
+            tmpItem = null
+        }
     }
 
     fun sorting(sorted_with: String, ascOrDesc: String) {
