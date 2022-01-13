@@ -1,10 +1,13 @@
 package com.survivalcoding.note_app.presentation.notes.adapter
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.survivalcoding.note_app.R
 import com.survivalcoding.note_app.databinding.ItemNoteBinding
 import com.survivalcoding.note_app.domain.model.Note
 
@@ -37,7 +40,7 @@ class NoteListAdapter(
             binding.apply {
                 titleTextView.text = note.title
                 contentTextView.text = note.content
-                root.setBackgroundColor(note.color)
+                root.backgroundTintList = ColorStateList.valueOf(note.color)
                 deleteImageView.setOnClickListener {
                     onDelete(note)
                 }
