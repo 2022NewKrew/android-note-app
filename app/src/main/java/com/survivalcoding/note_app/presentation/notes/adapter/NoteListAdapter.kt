@@ -18,21 +18,35 @@ class NoteListAdapter(
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        val currentNote = getItem(position)
-        holder.binding.apply {
-            titleTextView.text = currentNote.title
-            contentTextView.text = currentNote.content
-            root.setBackgroundColor(currentNote.color)
-            deleteImageView.setOnClickListener {
-                onDelete(currentNote)
-            }
-            root.setOnClickListener {
-                onSelect(currentNote)
+        holder.bind(
+            note = getItem(position),
+            onDelete = onDelete,
+            onSelect = onSelect
+        )
+    }
+
+    class NoteViewHolder(
+        private val binding: ItemNoteBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(
+            note: Note,
+            onDelete: (note: Note) -> Unit,
+            onSelect: (note: Note) -> Unit
+        ) {
+            binding.apply {
+                titleTextView.text = note.title
+                contentTextView.text = note.content
+                root.setBackgroundColor(note.color)
+                deleteImageView.setOnClickListener {
+                    onDelete(note)
+                }
+                root.setOnClickListener {
+                    onSelect(note)
+                }
             }
         }
     }
-
-    class NoteViewHolder(val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root)
 
     object DiffCallback : DiffUtil.ItemCallback<Note>() {
         override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
