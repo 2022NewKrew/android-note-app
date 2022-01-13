@@ -71,18 +71,11 @@ class NotesFragment : Fragment() {
             viewModel.sortNotes()
         }
 
-        viewModel.notes.observe(this) {
-            adapter.submitList(it)
+        viewModel.uiState.observe(this) {
+            adapter.submitList(it.notes)
+            filterRadioGroup.check(it.filter)
+            sortRadioGroup.check(it.sort)
         }
-
-        viewModel.filter.observe(this) {
-            filterRadioGroup.check(it)
-        }
-
-        viewModel.sort.observe(this) {
-            sortRadioGroup.check(it)
-        }
-
 
         val addButton = binding.addButton
         addButton.setOnClickListener {

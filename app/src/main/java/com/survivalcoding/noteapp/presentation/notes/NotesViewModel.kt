@@ -6,6 +6,7 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
 import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
@@ -14,24 +15,26 @@ class NotesViewModel(
     private val sortNotesUseCase: SortNotesUseCase,
 ) : AndroidViewModel(application) {
     private var _notes = MutableLiveData<List<Note>>()
-    val notes: LiveData<List<Note>> get() = _notes
-
     private var _filter = MutableLiveData<Int>()
-    val filter: LiveData<Int> get() = _filter
-
     private var _sort = MutableLiveData<Int>()
-    val sort: LiveData<Int> get() = _sort
 
     init {
         viewModelScope.launch {
+            _notes.value = sortNotesUseCase.invoke(
+                getValueFromFilterId(R.id.dateButton),
+                getValueFromSortId(R.id.descendingButton)
+            )
             _filter.value = R.id.dateButton
             _sort.value = R.id.descendingButton
-            _notes.value = sortNotesUseCase.invoke(
-                getValueFromFilterId(_filter.value!!),
-                getValueFromSortId(_sort.value!!)
-            )
         }
     }
+
+    //UiState를 굳이 LiveData에서 사용하고 싶다면 이게 베스트, 이걸 LiveData 만을 이용해 할 수 있는 방법은??
+    val uiState: LiveData<NotesUiState> =
+        combine(_notes.asFlow(), _filter.asFlow(), _sort.asFlow()) { notes, filter, sort ->
+            NotesUiState(notes, filter, sort)
+        }.asLiveData()
+
 
     suspend fun getNoteById(id: Int): Note? = notesRepository.getNoteById(id)
 
