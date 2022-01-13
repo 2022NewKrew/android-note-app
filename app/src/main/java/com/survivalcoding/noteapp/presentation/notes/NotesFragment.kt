@@ -9,12 +9,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.usecase.DeleteNoteUseCase
 import com.survivalcoding.noteapp.domain.usecase.GetNotesByOrderUseCase
+import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -26,7 +28,8 @@ class NotesFragment : Fragment() {
         val noteRepository = (requireActivity().application as App).noteRepository
         NotesViewModelFactory(
             GetNotesByOrderUseCase(noteRepository),
-            DeleteNoteUseCase(noteRepository)
+            DeleteNoteUseCase(noteRepository),
+            InsertNoteUseCase(noteRepository)
         )
     }
 
@@ -78,6 +81,7 @@ class NotesFragment : Fragment() {
         when (event) {
             is NotesViewModel.Event.NavigateToEditNote -> navigateToEditNote(event.note)
             is NotesViewModel.Event.NavigateToAddNote -> navigateToAddNote()
+            is NotesViewModel.Event.ShowSnackBarEvent -> showSnackBar(event.messageResourceId, event.actionTextResourceId, event.action)
         }
     }
 
@@ -93,6 +97,14 @@ class NotesFragment : Fragment() {
             .replace(R.id.fragment_container_view, AddEditNoteFragment.newInstance(note))
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun showSnackBar(messageResourceId: Int, actionTextResourceId: Int?, action: View.OnClickListener?) {
+        val snackBar = Snackbar.make(binding.root, messageResourceId, Snackbar.LENGTH_SHORT)
+        if (actionTextResourceId != null && action != null) {
+            snackBar.setAction(actionTextResourceId, action)
+        }
+        snackBar.show()
     }
 
     override fun onStart() {
