@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.domain.entity.Note
+import com.survivalcoding.noteapp.MyColors
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ItemNoteBinding
 
 class NoteViewHolder(private val binding: ItemNoteBinding) : ViewHolder(binding.root) {
@@ -22,8 +24,9 @@ class NoteViewHolder(private val binding: ItemNoteBinding) : ViewHolder(binding.
         val date = "set : " + formatter.format(item.timestamp)
         binding.deadlineTextview.text = date
          */
-        binding.root.setOnClickListener {
+        binding.root.setOnLongClickListener() {
             onLongClicked(item)
+            true
         }
     }
 
