@@ -6,6 +6,10 @@ class NoteInMemoryDataSource : NoteDataSource {
 
     private var notes: MutableList<Note> = mutableListOf()
 
+    override suspend fun getNoteById(id: Int): Note {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun insertNote(note: Note) {
         notes.add(note.copy(id = notes.size + 1))
     }

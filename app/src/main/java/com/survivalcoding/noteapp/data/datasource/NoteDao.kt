@@ -5,6 +5,9 @@ import com.survivalcoding.noteapp.domain.model.Note
 
 @Dao
 interface NoteDao {
+    @Query("SELECT * FROM note WHERE id == :id")
+    suspend fun getNoteById(id: Int): Note
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: Note)
 
