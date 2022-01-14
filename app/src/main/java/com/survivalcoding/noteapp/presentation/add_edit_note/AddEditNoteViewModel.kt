@@ -1,52 +1,53 @@
 package com.survivalcoding.noteapp.presentation.add_edit_note
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.survivalcoding.noteapp.domain.model.Note
-import com.survivalcoding.noteapp.domain.repository.NoteRepository
+import com.survivalcoding.noteapp.domain.model.NoteColor
+import com.survivalcoding.noteapp.domain.model.NoteState
 import com.survivalcoding.noteapp.domain.usecase.InsertNoteUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
     private val insertNoteUseCase: InsertNoteUseCase
 ) : ViewModel() {
-    private var currentNote = Note()
+    private val _id = MutableStateFlow<Long?>(null)
+    private val _title = MutableStateFlow("")
+    private val _content = MutableStateFlow("")
+    private val _color = MutableStateFlow(NoteColor.COLOR_1)
 
-    fun setNote(
-        title: String? = null,
-        content: String? = null,
-        color: String? = null,
-        timeStamp: Long? = null,
-    ) {
-        title?.let { currentNote = currentNote.copy(title = title) }
-        content?.let { currentNote = currentNote.copy(content = content) }
-        color?.let { currentNote = currentNote.copy(color = color) }
-        timeStamp?.let { currentNote = currentNote.copy(timestamp = timeStamp) }
+    val noteState = combine(_title, _content, _color) { title, content, color ->
+        NoteState(title, content, color)
     }
 
-    fun setNote(note: Note) {
-        currentNote = note
+    fun setId(id: Long?) {
+        _id.value = id
     }
 
-    fun getNote() = currentNote
+    fun setTitle(title: String) {
+        _title.value = title
+    }
+
+    fun setContent(content: String) {
+        _content.value = content
+    }
+
+    fun setColor(color: NoteColor) {
+        _color.value = color
+    }
 
     fun insert() {
         viewModelScope.launch {
-            insertNoteUseCase(currentNote)
+            insertNoteUseCase(
+                Note(
+                    id = _id.value,
+                    title = _title.value,
+                    content = _content.value,
+                    color = _color.value,
+                )
+            )
         }
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class AddEditNoteViewModelFactory(
-    private val repository: NoteRepository
-) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(AddEditNoteViewModel::class.java))
-            return AddEditNoteViewModel(
-                InsertNoteUseCase(repository)
-            ) as T
-        else throw IllegalArgumentException()
     }
 }

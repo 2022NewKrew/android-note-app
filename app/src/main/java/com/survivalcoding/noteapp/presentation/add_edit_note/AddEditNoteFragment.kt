@@ -1,6 +1,5 @@
 package com.survivalcoding.noteapp.presentation.add_edit_note
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentAddEditNoteBinding
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.model.NoteColor
 import com.survivalcoding.noteapp.presentation.notes.NotesFragment
-import com.survivalcoding.noteapp.presentation.notes.NotesViewModel
-import java.util.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class AddEditNoteFragment : Fragment() {
 
@@ -37,20 +40,19 @@ class AddEditNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        init(arguments)
+        setNote()
 
         binding.rgSelectColor.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.setNote(
-                color = when (checkedId) {
-                    binding.rbColor1.id -> COLOR_1
-                    binding.rbColor2.id -> COLOR_2
-                    binding.rbColor3.id -> COLOR_3
-                    binding.rbColor4.id -> COLOR_4
-                    binding.rbColor5.id -> COLOR_5
-                    else -> COLOR_1
+            viewModel.setColor(
+                when (checkedId) {
+                    binding.rbColor1.id -> NoteColor.COLOR_1
+                    binding.rbColor2.id -> NoteColor.COLOR_2
+                    binding.rbColor3.id -> NoteColor.COLOR_3
+                    binding.rbColor4.id -> NoteColor.COLOR_4
+                    binding.rbColor5.id -> NoteColor.COLOR_5
+                    else -> NoteColor.COLOR_1
                 }
             )
-            binding.clAddEditBackground.setBackgroundColor((Color.parseColor(viewModel.getNote().color)))
         }
 
         binding.fabSaveNoteButton.setOnClickListener {
@@ -68,45 +70,38 @@ class AddEditNoteFragment : Fragment() {
                     Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                viewModel.setNote(
-                    title = title,
-                    content = content,
-                    timeStamp = Date().time,
-                )
+                viewModel.setTitle(title)
+                viewModel.setContent(content)
+
                 viewModel.insert()
+
                 parentFragmentManager.commit {
                     replace(R.id.fragmentContainerView, NotesFragment())
                     setReorderingAllowed(true)
                 }
             }
         }
-    }
 
-    private fun init(bundle: Bundle?) {
-        if (bundle == null) {
-            viewModel.setNote(Note())
-        } else {
-            viewModel.setNote(bundle.getParcelable(NotesFragment.NOTE_KEY) ?: Note())
-        }
-
-        binding.etTitleInput.setText(viewModel.getNote().title)
-        binding.etContentInput.setText(viewModel.getNote().content)
-        binding.clAddEditBackground.setBackgroundColor(Color.parseColor(viewModel.getNote().color))
-
-        when (viewModel.getNote().color) {
-            COLOR_1 -> binding.rbColor1.isChecked = true
-            COLOR_2 -> binding.rbColor2.isChecked = true
-            COLOR_3 -> binding.rbColor3.isChecked = true
-            COLOR_4 -> binding.rbColor4.isChecked = true
-            COLOR_5 -> binding.rbColor5.isChecked = true
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.noteState.collect {
+                    binding.clAddEditBackground.setBackgroundColor(it.color.toInt())
+                    binding.etTitleInput.setText(it.title)
+                    binding.etContentInput.setText(it.content)
+                    binding.rgSelectColor.check(it.color.toId())
+                }
+            }
         }
     }
 
-    companion object {
-        const val COLOR_1 = "#ffa288"   // -23928
-        const val COLOR_2 = "#e3ec96"   // -1839978
-        const val COLOR_3 = "#c886d2"   // -3635502
-        const val COLOR_4 = "#76d9e6"   // -8988186
-        const val COLOR_5 = "#f282a5"   // -884059
+    private fun setNote() {
+        arguments?.let {
+            val note = it.getParcelable(NotesFragment.NOTE_KEY) ?: Note()
+
+            viewModel.setId(note.id)
+            viewModel.setTitle(note.title)
+            viewModel.setContent(note.content)
+            viewModel.setColor(note.color)
+        }
     }
 }
