@@ -1,21 +1,23 @@
 package com.survivalcoding.noteapp.presentation.notes
 
 import android.os.Bundle
+import android.transition.TransitionManager
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.NoteApplication
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
+import com.survivalcoding.noteapp.domain.NoteOrderBy
 import com.survivalcoding.noteapp.presentation.AppViewModelFactory
 import com.survivalcoding.noteapp.presentation.notes.adapter.NotesAdapter
+import com.survivalcoding.noteapp.toggleVisibility
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -32,6 +34,7 @@ class NotesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -41,7 +44,7 @@ class NotesFragment : Fragment() {
         binding.orderByRg.setOnCheckedChangeListener { _, id ->
             when (id) {
                 R.id.orderByTitleRb -> viewModel.setOrderBy(NoteOrderBy.TITLE)
-                R.id.orderByDateRb -> viewModel.setOrderBy(NoteOrderBy.DATE)
+                R.id.orderByDateRb -> viewModel.setOrderBy(NoteOrderBy.TIMESTAMP)
                 R.id.orderByColorRb -> viewModel.setOrderBy(NoteOrderBy.COLOR)
             }
         }
@@ -55,10 +58,19 @@ class NotesFragment : Fragment() {
 
         val notesAdapter = NotesAdapter({
             findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToNoteFragment(it.id!!))
-        }, {
-            viewModel.deleteNote(it)
+        }, { note ->
+            viewModel.deleteNote(note)
+            Snackbar.make(binding.root, "Note Deleted", Snackbar.LENGTH_SHORT).apply {
+                setAction("Redo") { viewModel.undoDelete(note) }
+                anchorView = binding.addFab
+            }.show()
         }).apply {
             registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    binding.notesRv.scrollToPosition(0)
+                }
+
                 override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
                     binding.notesRv.scrollToPosition(0)
                 }
@@ -81,6 +93,21 @@ class NotesFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_notes, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.notesSort -> {
+                TransitionManager.beginDelayedTransition(binding.root)
+                binding.sortLl.toggleVisibility()
+            }
+        }
+
+        return true
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -89,7 +116,7 @@ class NotesFragment : Fragment() {
     private fun NoteOrderBy.toId(): Int {
         return when(this) {
             NoteOrderBy.TITLE -> R.id.orderByTitleRb
-            NoteOrderBy.DATE -> R.id.orderByDateRb
+            NoteOrderBy.TIMESTAMP -> R.id.orderByDateRb
             NoteOrderBy.COLOR -> R.id.orderByColorRb
         }
     }

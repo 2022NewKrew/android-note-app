@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        setSupportActionBar(binding.toolbar)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.toolbar.visibility =

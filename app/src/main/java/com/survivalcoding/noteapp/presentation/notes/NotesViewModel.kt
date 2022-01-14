@@ -2,46 +2,39 @@ package com.survivalcoding.noteapp.presentation.notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.survivalcoding.noteapp.domain.NoteOrderBy
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
-import com.survivalcoding.noteapp.domain.usecase.GetFlowOrderByUseCase
+import com.survivalcoding.noteapp.domain.usecase.GetNotesOrderByUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
     private val noteRepository: NoteRepository,
-    getNotesOrderByUseCase: GetFlowOrderByUseCase<Note>
+    getNotesOrderByUseCase: GetNotesOrderByUseCase
 ) : ViewModel() {
 
 
     private val _orderBy = MutableStateFlow(NoteOrderBy.TITLE)
     private val _isAsc = MutableStateFlow(true)
-    private val _notes = getNotesOrderByUseCase(_orderBy.map { it.toComparator() }, _isAsc)
-    private val _deletedNote = MutableStateFlow<Note?>(null)
+    private val _notes = getNotesOrderByUseCase(_orderBy, _isAsc)
 
     val uiState =
-        combine(_orderBy, _isAsc, _notes,_deletedNote) { orderBy, isAsc, notes, deletedNote ->
-            NotesUiState(orderBy, isAsc, notes, deletedNote)
+        combine(_orderBy, _isAsc, _notes) { orderBy, isAsc, notes ->
+            NotesUiState(orderBy, isAsc, notes)
         }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             noteRepository.delete(note)
-            _deletedNote.value = note
         }
     }
 
-    fun undoDelete() {
+    fun undoDelete(note: Note) {
         viewModelScope.launch {
-            _deletedNote.value?.let { noteRepository.upsert(it) }
-            _deletedNote.value = null
+            noteRepository.upsert(note)
         }
-    }
-
-    fun setDeletedNoteToNull() {
-        _deletedNote.value = null
     }
 
     fun setOrderBy(orderBy: NoteOrderBy) {

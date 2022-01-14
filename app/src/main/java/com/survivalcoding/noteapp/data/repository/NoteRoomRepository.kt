@@ -15,6 +15,10 @@ class NoteRoomRepository(private val noteDao: NoteDao) : NoteRepository {
         return noteDao.selectById(id)
     }
 
+    override fun selectAllOrderBy(columnName: String, isAsc: Boolean): Flow<List<Note>> {
+        return noteDao.selectAllOrderBy(columnName, isAsc)
+    }
+
     override suspend fun upsert(note: Note) {
         noteDao.upsert(note)
     }
