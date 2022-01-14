@@ -5,5 +5,4 @@
     <size
         android:width="50dp"
         android:height="50dp" />
-    <stroke android:width="3dp" />
 </shape>

@@ -15,14 +15,4 @@ enum class NoteColor {
             COLOR_5 -> Color.parseColor("#f282a5")
         }
     }
-
-    fun toId(): Int {
-        return when (this) {
-            COLOR_1 -> R.id.rb_color1
-            COLOR_2 -> R.id.rb_color2
-            COLOR_3 -> R.id.rb_color3
-            COLOR_4 -> R.id.rb_color4
-            COLOR_5 -> R.id.rb_color5
-        }
-    }
 }
