@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/main_activity_navigation"
+  app:startDestination="@id/noteListFragment">
+
+  <fragment
+    android:id="@+id/noteListFragment"
+    android:label="fragment_note_list"
+    android:name="com.survivalcoding.noteapp.presentation.note.list.NoteListFragment"
+    tools:layout="@layout/fragment_note_list">
+    <action
+      android:id="@+id/action_edit_note"
+      app:destination="@id/noteEditFragment">
+      <argument
+        android:defaultValue="@null"
+        android:name="note"
+        app:argType="com.survivalcoding.noteapp.domain.model.NoteItem"
+        app:nullable="true" />
+    </action>
+  </fragment>
+  <fragment
+    android:id="@+id/noteEditFragment"
+    android:label="fragment_note_edit"
+    android:name="com.survivalcoding.noteapp.presentation.note.edit.NoteEditFragment"
+    tools:layout="@layout/fragment_note_edit" />
+</navigation>
