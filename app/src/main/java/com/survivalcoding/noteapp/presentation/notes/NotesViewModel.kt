@@ -29,4 +29,12 @@ class NotesViewModel(
         deleteNoteUseCase(note)
         getNotes()
     }
+
+    fun setSortFactor(factor: SortFactor) {
+        _sortFactor.value = factor
+    }
+
+    fun setSortType(type: SortType) {
+        _sortType.value = type
+    }
 }

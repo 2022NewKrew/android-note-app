@@ -1,7 +1,8 @@
 import android.os.Bundle
-import android.text.TextUtils.replace
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -10,6 +11,8 @@ import androidx.fragment.app.viewModels
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
+import com.survivalcoding.noteapp.domain.model.SortFactor
+import com.survivalcoding.noteapp.domain.model.SortType
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModel
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModelFactory
 import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
@@ -50,8 +53,22 @@ class NotesFragment : Fragment() {
             adapter.submitList(list)
         }
 
-        // 할일 목록 조회
-        viewModel.getNotes()
+        // 정렬 옵션 보이기
+        binding.notesIvSort.setOnClickListener {
+            binding.notesLlSort.visibility =
+                if (binding.notesLlSort.visibility == VISIBLE) GONE else VISIBLE
+        }
+
+        // 정렬 옵션 변경
+        binding.notesRbTitle.setOnClickListener { viewModel.setSortFactor(SortFactor.TITLE) }
+        binding.notesRbDate.setOnClickListener { viewModel.setSortFactor(SortFactor.TIMESTAMP) }
+        binding.notesRbColor.setOnClickListener { viewModel.setSortFactor(SortFactor.COLOR) }
+        binding.notesRbAsc.setOnClickListener { viewModel.setSortType(SortType.ASC) }
+        binding.notesRbDesc.setOnClickListener { viewModel.setSortType(SortType.DESC) }
+
+        // 정렬 옵션 변경 시 리스트 조회
+        viewModel.sortFactor.observe(this) { viewModel.getNotes() }
+        viewModel.sortType.observe(this) { viewModel.getNotes() }
     }
 
     override fun onDestroyView() {
