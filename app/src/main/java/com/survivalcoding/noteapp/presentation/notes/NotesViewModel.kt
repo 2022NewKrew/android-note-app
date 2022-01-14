@@ -29,7 +29,6 @@ class NotesViewModel(
         }
     }
 
-    //UiState를 굳이 LiveData에서 사용하고 싶다면 이게 베스트, 이걸 LiveData 만을 이용해 할 수 있는 방법은??
     val uiState: LiveData<NotesUiState> =
         combine(_notes.asFlow(), _filter.asFlow(), _sort.asFlow()) { notes, filter, sort ->
             NotesUiState(notes, filter, sort)

@@ -24,13 +24,9 @@ class NoteViewHolder(
         binding.content.text = note.content
         val layers = binding.root.background as LayerDrawable
         val mainNote = layers.findDrawableByLayerId(R.id.main) as GradientDrawable
-        //Todo: 색깔 부분 구현 후 원래대로 돌려놓기
-        //mainNote.setColor(note.color)
-        mainNote.setColor(Color.GRAY)
+        mainNote.setColor(note.color)
         val foldNote = layers.findDrawableByLayerId(R.id.fold) as GradientDrawable
-        //foldNote.setColor(getDarkColor(note.color))
-        foldNote.setColor(getDarkColor(Color.GRAY))
-
+        foldNote.setColor(getDarkColor(note.color))
 
         itemView.setOnClickListener {
             onClickView(note)

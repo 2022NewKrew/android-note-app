@@ -3,11 +3,11 @@ package com.survivalcoding.noteapp.domain.usecase
 import com.survivalcoding.noteapp.data.repository.NotesInMemoryRepository
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
-import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.BY_COLOR
-import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.BY_DATE
-import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.BY_TITLE
-import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.SORT_ASC
-import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.SORT_DESC
+import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase.Companion.BY_COLOR
+import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase.Companion.BY_DATE
+import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase.Companion.BY_TITLE
+import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase.Companion.SORT_ASC
+import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase.Companion.SORT_DESC
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
