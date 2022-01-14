@@ -6,33 +6,31 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
 import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.MODIFY
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 class AddEditNoteViewModel(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private var _addEditNote = MutableLiveData(Note(color = 0))
+    private val _addEditNote = MutableLiveData(Note(color = 0))
     val addEditNote: LiveData<Note> get() = _addEditNote
-
-    private var note: Note = Note(color = 0)
 
     init {
         savedStateHandle.get<Int>(MODIFY)?.let { it ->
-            runBlocking { // runBlocking을 하지 않으면 onCreatedView가 먼저 실행되는 문제 발견
+            viewModelScope.launch {
                 notesRepository.getNoteById(it)?.let {
-                    note = it
-                    _addEditNote.value = note
+                    _addEditNote.value = it
                 }
             }
         }
     }
 
-    fun getNote(): Note = note
+    fun getNote(): LiveData<Note> = addEditNote
 
-    fun changeColor(color: Int) {
-        note = note.copy(color = color)
-        _addEditNote.value = note
+    fun updateColor(color: Int) {
+        _addEditNote.value?.let {
+            _addEditNote.value = it.copy(color = color)
+        }
     }
 }
 

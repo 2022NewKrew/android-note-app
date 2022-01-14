@@ -43,11 +43,13 @@ class AddEditNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.addEditNote.observe(this) {}
         val title = binding.titleEditText
-        title.setText(viewModel.getNote().title)
         val content = binding.contentEditText
-        content.setText(viewModel.getNote().content)
+
+        viewModel.addEditNote.observe(this) {
+            title.setText(it.title)
+            content.setText(it.content)
+        }
 
         val saveButton = binding.saveButton
         saveButton.setOnClickListener {
@@ -62,10 +64,12 @@ class AddEditNoteFragment : Fragment() {
                 Snackbar.make(view, "내용이 존재하지 않습니다.", Snackbar.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            viewModel.getNote().value?.let {
+                activityViewModel.insertNote(
+                    it.copy(title = titleText, content = contentText)
+                )
+            }
 
-            activityViewModel.insertNote(
-                viewModel.getNote().copy(title = titleText, content = contentText)
-            )
             parentFragmentManager.popBackStack()
         }
     }

@@ -51,9 +51,6 @@ class NotesFragment : Fragment() {
         })
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        viewModel.notes.observe(this) {
-            adapter.submitList(it)
-        }
 
         val alignButton = binding.alignButton
         val filterLayout = binding.filterLayout
@@ -61,12 +58,31 @@ class NotesFragment : Fragment() {
             if (filterLayout.visibility == VISIBLE) filterLayout.visibility = GONE
             else filterLayout.visibility = VISIBLE
         }
-        //ToDo: 정렬 기능 구현
+
+        val filterRadioGroup = binding.filterRadioGroup
+        val sortRadioGroup = binding.sortRadioGroup
+
+        filterRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            viewModel.updateFilter(checkedId)
+            viewModel.sortNotes()
+        }
+        sortRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            viewModel.updateSort(checkedId)
+            viewModel.sortNotes()
+        }
+
+        viewModel.uiState.observe(this) {
+            adapter.submitList(it.notes)
+            filterRadioGroup.check(it.filter)
+            sortRadioGroup.check(it.sort)
+        }
+
         val addButton = binding.addButton
         addButton.setOnClickListener {
             moveToAddEditNoteFragment()
         }
     }
+
 
     private fun moveToAddEditNoteFragment(id: Int = -1) {
         parentFragmentManager.beginTransaction()
@@ -81,13 +97,6 @@ class NotesFragment : Fragment() {
 
     companion object {
         const val MODIFY = "modify"
-
-        const val SORT_ASC = 0
-        const val SORT_DESC = 1
-
-        const val BY_TITLE = 0
-        const val BY_DATE = 1
-        const val BY_COLOR = 2
     }
 
     override fun onDestroyView() {
