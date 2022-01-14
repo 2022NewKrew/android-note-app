@@ -1,9 +1,8 @@
 package com.survivalcoding.noteapp.presentation.notes
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,6 +42,27 @@ class NotesFragment : Fragment() {
             { note -> viewModel.navigateToEditNote(note) },
             { note -> viewModel.deleteNote(note) }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.notes, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.show_sort_section_button) {
+            println("hello")
+            binding.sortByRadioGroup.isVisible = !binding.sortByRadioGroup.isVisible
+            binding.sortOrderRadioGroup.isVisible = !binding.sortOrderRadioGroup.isVisible
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreateView(
