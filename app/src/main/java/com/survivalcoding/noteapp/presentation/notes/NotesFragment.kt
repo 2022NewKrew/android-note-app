@@ -33,7 +33,8 @@ class NotesFragment : Fragment() {
     private val noteListAdapter by lazy {
         NoteListAdapter(
             deleteClickEvent = { note ->
-                viewModel.deleteNote(note)
+                viewModel.onEvent(NotesEvent.DeleteNote(note))
+                // TODO: undo
             },
             itemClickEvent = { note ->
                 toAddEditNoteFragment(note)
@@ -58,32 +59,38 @@ class NotesFragment : Fragment() {
 
         // title, timestamp, color 기준으로 정렬
         binding.rgSortBase.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.setSortKey(
-                when (checkedId) {
-                    binding.rbBaseTitle.id -> SortKey.TITLE
-                    binding.rbBaseDate.id -> SortKey.TIMESTAMP
-                    else -> SortKey.COLOR
-                }
+            viewModel.onEvent(
+                NotesEvent.SetSortKey(
+                    when (checkedId) {
+                        binding.rbBaseTitle.id -> SortKey.TITLE
+                        binding.rbBaseDate.id -> SortKey.TIMESTAMP
+                        else -> SortKey.COLOR
+                    }
+                )
             )
         }
 
         // 오름차순, 내림차순 정렬
         binding.rgSortMode.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.setSortMode(
-                when (checkedId) {
-                    binding.rbModeAsc.id -> SortMode.ASCENDING
-                    else -> SortMode.DESCENDING
-                }
+            viewModel.onEvent(
+                NotesEvent.SetSortMode(
+                    when (checkedId) {
+                        binding.rbModeAsc.id -> SortMode.ASCENDING
+                        else -> SortMode.DESCENDING
+                    }
+                )
             )
         }
 
         // 정렬 기능 표시/비표시
         binding.ivDrawerTrigger.setOnClickListener {
-            viewModel.setVisibility(
-                when {
-                    binding.clSortCondition.isVisible -> View.GONE
-                    else -> View.VISIBLE
-                }
+            viewModel.onEvent(
+                NotesEvent.SetVisibility(
+                    when {
+                        binding.clSortCondition.isVisible -> View.GONE
+                        else -> View.VISIBLE
+                    }
+                )
             )
         }
 
@@ -92,8 +99,8 @@ class NotesFragment : Fragment() {
             toAddEditNoteFragment(Note())
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     noteListAdapter.submitList(it.notes)
                     binding.rgSortBase.check(it.sortKey.toId())

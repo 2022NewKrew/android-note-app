@@ -34,30 +34,20 @@ class NotesViewModel(
         UIState(sortKey, sortMode, notes, visibility)
     }
 
-    fun deleteNote(note: Note) {
-        viewModelScope.launch {
-            deleteNoteUseCase(note)
-            _deletedNote.value = note
+    fun onEvent(event: NotesEvent) {
+        when (event) {
+            is NotesEvent.DeleteNote -> viewModelScope.launch {
+                deleteNoteUseCase(event.note)
+                _deletedNote.value = event.note
+            }
+            is NotesEvent.SetSortKey -> _sortKey.value = event.key
+            is NotesEvent.SetSortMode -> _sortMode.value = event.mode
+            is NotesEvent.SetVisibility -> _visibility.value = event.visibility
+            NotesEvent.UndoDelete -> viewModelScope.launch {
+                _deletedNote.value?.let { insertNoteUseCase(it) }
+                _deletedNote.value = null
+            }
         }
-    }
-
-    fun undoDelete() {
-        viewModelScope.launch {
-            _deletedNote.value?.let { insertNoteUseCase(it) }
-            _deletedNote.value = null
-        }
-    }
-
-    fun setSortKey(key: SortKey) {
-        _sortKey.value = key
-    }
-
-    fun setSortMode(mode: SortMode) {
-        _sortMode.value = mode
-    }
-
-    fun setVisibility(visibility: Int) {
-        _visibility.value = visibility
     }
 }
 
