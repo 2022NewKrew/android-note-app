@@ -1,6 +1,6 @@
 package com.survivalcoding.noteapp.presentation
 
-import NotesFragment
+import com.survivalcoding.noteapp.presentation.notes.NotesFragment
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit

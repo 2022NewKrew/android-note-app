@@ -9,7 +9,8 @@ import kotlinx.coroutines.launch
 
 class NotesViewModel(
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val getNotesUseCase: GetNotesUseCase
+    private val getNotesUseCase: GetNotesUseCase,
+    private val insertNoteUseCase: InsertNoteUseCase
 ) : ViewModel() {
     private val _notes = MutableLiveData<List<Note>>()
     val notes: LiveData<List<Note>> get() = _notes
@@ -17,6 +18,7 @@ class NotesViewModel(
     val sortFactor: LiveData<SortFactor> get() = _sortFactor
     private val _sortType = MutableLiveData(SortType.DESC)
     val sortType: LiveData<SortType> get() = _sortType
+    private var recentlyDeletedNote: Note? = null
 
     fun getNotes() = viewModelScope.launch {
         _notes.value = getNotesUseCase.invoke(
@@ -26,7 +28,14 @@ class NotesViewModel(
     }
 
     fun deleteNote(note: Note) = viewModelScope.launch {
+        recentlyDeletedNote = note
         deleteNoteUseCase(note)
+        getNotes()
+    }
+
+    fun undoDelete() = viewModelScope.launch {
+        insertNoteUseCase(recentlyDeletedNote ?: return@launch)
+        recentlyDeletedNote = null
         getNotes()
     }
 

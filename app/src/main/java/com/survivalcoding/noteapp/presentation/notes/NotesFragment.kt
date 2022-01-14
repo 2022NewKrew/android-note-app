@@ -1,3 +1,6 @@
+package com.survivalcoding.noteapp.presentation.notes
+
+import AddEditFragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.model.SortFactor
 import com.survivalcoding.noteapp.domain.model.SortType
-import com.survivalcoding.noteapp.presentation.notes.NotesViewModel
-import com.survivalcoding.noteapp.presentation.notes.NotesViewModelFactory
 import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
 
 class NotesFragment : Fragment() {
@@ -26,8 +28,17 @@ class NotesFragment : Fragment() {
     private val viewModel by viewModels<NotesViewModel> {
         NotesViewModelFactory((requireActivity().application as App).repository)
     }
+    private val snackbar by lazy {
+        Snackbar.make(
+            binding.root,
+            R.string.deleted_message, Snackbar.LENGTH_SHORT
+        ).setAction(R.string.delete_undo) { viewModel.undoDelete() }
+    }
     private val adapter by lazy {
-        NoteListAdapter({ note -> viewModel.deleteNote(note) }, { note ->
+        NoteListAdapter({ note ->
+            viewModel.deleteNote(note)
+            snackbar.show()
+        }, { note ->
             moveToAdd(note)
         })
     }

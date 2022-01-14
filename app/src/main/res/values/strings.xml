@@ -17,4 +17,6 @@
     <string name="sort_color">Color</string>
     <string name="sort_ascending">Ascending</string>
     <string name="sort_descending">Descending</string>
+    <string name="deleted_message">Note deleted</string>
+    <string name="delete_undo">Undo</string>
 </resources>
