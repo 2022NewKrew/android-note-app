@@ -95,7 +95,7 @@ class NotesFragment : Fragment() {
     }
 
     private fun repeatOnStart(block: suspend CoroutineScope.() -> Unit) {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED, block)
         }
     }
