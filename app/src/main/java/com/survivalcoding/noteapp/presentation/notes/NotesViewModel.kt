@@ -23,9 +23,7 @@ class NotesViewModel(
     private val _sortKey = MutableStateFlow(SortKey.TITLE)
     private val _sortMode = MutableStateFlow(SortMode.ASCENDING)
     private val _notes = getSortedNotesUseCase(_sortKey.map { it.toComparator() }, _sortMode)
-
     private val _deletedNote = MutableStateFlow<Note?>(null)
-
     private val _visibility = MutableStateFlow(View.GONE)
 
     val uiState = combine(
@@ -50,4 +48,3 @@ class NotesViewModel(
         }
     }
 }
-

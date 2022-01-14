@@ -11,6 +11,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
@@ -19,7 +20,9 @@ import com.survivalcoding.noteapp.domain.model.SortKey
 import com.survivalcoding.noteapp.domain.model.SortMode
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class NotesFragment : Fragment() {
@@ -34,7 +37,10 @@ class NotesFragment : Fragment() {
         NoteListAdapter(
             deleteClickEvent = { note ->
                 viewModel.onEvent(NotesEvent.DeleteNote(note))
-                // TODO: undo
+                Snackbar.make(binding.root, "노트가 삭제되었습니다.", Snackbar.LENGTH_LONG)
+                    .setAction("cancel") { viewModel.onEvent(NotesEvent.UndoDelete) }
+                    .setAnchorView(binding.fabAddNewNoteButton)
+                    .show()
             },
             itemClickEvent = { note ->
                 toAddEditNoteFragment(note)
@@ -59,27 +65,12 @@ class NotesFragment : Fragment() {
 
         // title, timestamp, color 기준으로 정렬
         binding.rgSortBase.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.onEvent(
-                NotesEvent.SetSortKey(
-                    when (checkedId) {
-                        binding.rbBaseTitle.id -> SortKey.TITLE
-                        binding.rbBaseDate.id -> SortKey.TIMESTAMP
-                        else -> SortKey.COLOR
-                    }
-                )
-            )
+            viewModel.onEvent(idToSetKeyEvent(checkedId))
         }
 
         // 오름차순, 내림차순 정렬
         binding.rgSortMode.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.onEvent(
-                NotesEvent.SetSortMode(
-                    when (checkedId) {
-                        binding.rbModeAsc.id -> SortMode.ASCENDING
-                        else -> SortMode.DESCENDING
-                    }
-                )
-            )
+            viewModel.onEvent(idToSetModeEvent(checkedId))
         }
 
         // 정렬 기능 표시/비표시
@@ -99,16 +90,41 @@ class NotesFragment : Fragment() {
             toAddEditNoteFragment(Note())
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    noteListAdapter.submitList(it.notes)
-                    binding.rgSortBase.check(it.sortKey.toId())
-                    binding.rgSortMode.check(it.sortMode.toId())
-                    binding.clSortCondition.visibility = it.visibility
-                }
+        collect()
+    }
+
+    private fun collect() {
+        repeatOnStart {
+            viewModel.uiState.collectLatest {
+                noteListAdapter.submitList(it.notes)
+                binding.rgSortBase.check(it.sortKey.toId())
+                binding.rgSortMode.check(it.sortMode.toId())
+                binding.clSortCondition.visibility = it.visibility
             }
         }
+    }
+
+    private fun repeatOnStart(block: suspend CoroutineScope.() -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED, block)
+        }
+    }
+
+    private fun idToSetKeyEvent(id: Int): NotesEvent.SetSortKey {
+        val key = when (id) {
+            binding.rbBaseTitle.id -> SortKey.TITLE
+            binding.rbBaseDate.id -> SortKey.TIMESTAMP
+            else -> SortKey.COLOR
+        }
+        return NotesEvent.SetSortKey(key)
+    }
+
+    private fun idToSetModeEvent(id: Int): NotesEvent.SetSortMode {
+        val mode = when (id) {
+            binding.rbModeAsc.id -> SortMode.ASCENDING
+            else -> SortMode.DESCENDING
+        }
+        return NotesEvent.SetSortMode(mode)
     }
 
     private fun toAddEditNoteFragment(note: Note) {

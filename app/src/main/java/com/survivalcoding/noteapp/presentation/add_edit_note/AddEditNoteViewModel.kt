@@ -22,32 +22,22 @@ class AddEditNoteViewModel(
         NoteState(title, content, color)
     }
 
-    fun setId(id: Long?) {
-        _id.value = id
-    }
-
-    fun setTitle(title: String) {
-        _title.value = title
-    }
-
-    fun setContent(content: String) {
-        _content.value = content
-    }
-
-    fun setColor(color: NoteColor) {
-        _color.value = color
-    }
-
-    fun insert() {
-        viewModelScope.launch {
-            insertNoteUseCase(
-                Note(
-                    id = _id.value,
-                    title = _title.value,
-                    content = _content.value,
-                    color = _color.value,
+    fun onEvent(event: AddEditNoteEvent) {
+        when (event) {
+            AddEditNoteEvent.InsertNote -> viewModelScope.launch {
+                insertNoteUseCase(
+                    Note(
+                        id = _id.value,
+                        title = _title.value,
+                        content = _content.value,
+                        color = _color.value,
+                    )
                 )
-            )
+            }
+            is AddEditNoteEvent.SetColor -> _color.value = event.color
+            is AddEditNoteEvent.SetContent -> _content.value = event.content
+            is AddEditNoteEvent.SetId -> _id.value = event.id
+            is AddEditNoteEvent.SetTitle -> _title.value = event.title
         }
     }
 }
