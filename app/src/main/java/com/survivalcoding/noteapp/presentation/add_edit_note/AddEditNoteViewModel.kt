@@ -1,9 +1,9 @@
 package com.survivalcoding.noteapp.presentation.add_edit_note
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
+import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
 import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.MODIFY
@@ -13,10 +13,10 @@ class AddEditNoteViewModel(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private val _addEditNote = MutableLiveData(Note(color = Color.RED))
+    private val _addEditNote = MutableLiveData(Note(color = R.color.orange))
     val addEditNote: LiveData<Note> get() = _addEditNote
 
-    val colors = listOf(Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE, Color.CYAN)
+    val colors = listOf(R.color.orange, R.color.yellow, R.color.purple, R.color.blue, R.color.pink)
 
     init {
         savedStateHandle.get<Int>(MODIFY)?.let { it ->
@@ -47,6 +47,7 @@ class AddEditNoteViewModel(
             if (it.content != content) _addEditNote.value = it.copy(content = content)
         }
     }
+
 }
 
 class AddEditNoteViewModelFactory(

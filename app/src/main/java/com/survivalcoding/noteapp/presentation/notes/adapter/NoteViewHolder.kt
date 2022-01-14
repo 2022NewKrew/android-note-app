@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.ItemNoteBinding
@@ -23,10 +24,12 @@ class NoteViewHolder(
         binding.title.text = note.title
         binding.content.text = note.content
         val layers = binding.root.background as LayerDrawable
+        val color = ContextCompat.getColor(itemView.context, note.color)
+
         val mainNote = layers.findDrawableByLayerId(R.id.main) as GradientDrawable
-        mainNote.setColor(note.color)
+        mainNote.setColor(color)
         val foldNote = layers.findDrawableByLayerId(R.id.fold) as GradientDrawable
-        foldNote.setColor(getDarkColor(note.color))
+        foldNote.setColor(getDarkColor(color))
 
         itemView.setOnClickListener {
             onClickView(note)

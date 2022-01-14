@@ -71,7 +71,7 @@ class AddEditNoteFragment : Fragment() {
         viewModel.addEditNote.observe(this) {
             title.setText(it.title)
             content.setText(it.content)
-            binding.root.setBackgroundColor(it.color)
+            binding.root.setBackgroundResource(it.color)
         }
 
         val saveButton = binding.saveButton
