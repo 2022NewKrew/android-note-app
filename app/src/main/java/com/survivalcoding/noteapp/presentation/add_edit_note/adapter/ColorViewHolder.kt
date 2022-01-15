@@ -1,6 +1,5 @@
 package com.survivalcoding.noteapp.presentation.add_edit_note.adapter
 
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.DrawableContainer
 import android.graphics.drawable.GradientDrawable
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.survivalcoding.noteapp.databinding.ItemColorBinding
 import kotlin.math.roundToInt
 
-
 class ColorViewHolder(
     itemView: View,
 ) : RecyclerView.ViewHolder(itemView) {
@@ -20,7 +18,8 @@ class ColorViewHolder(
 
     fun bind(color: Int) {
         val gradientDrawable = binding.radioButton.buttonDrawable as StateListDrawable
-        val drawableContainerState = gradientDrawable.constantState as DrawableContainer.DrawableContainerState
+        val drawableContainerState =
+            gradientDrawable.constantState as DrawableContainer.DrawableContainerState
         val children = drawableContainerState.children
         val selectedItem = children[0] as GradientDrawable
         selectedItem.setColor(ContextCompat.getColor(itemView.context, color))
@@ -43,10 +42,6 @@ class ColorViewHolder(
             g.coerceAtMost(255),
             b.coerceAtMost(255)
         )
-    }
-
-    fun setRadioButton(isChecked : Boolean){
-        binding.radioButton.isChecked = isChecked
     }
 
     fun getRadioButton(): RadioButton = binding.radioButton

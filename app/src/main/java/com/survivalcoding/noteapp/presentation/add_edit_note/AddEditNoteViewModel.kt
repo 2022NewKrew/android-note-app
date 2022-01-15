@@ -33,7 +33,7 @@ class AddEditNoteViewModel(
         }
     }
 
-    fun getFirstColor(): Int = _addEditNote.value!!.color
+    fun getColor(): Int = _addEditNote.value!!.color
 
     fun getNote(): LiveData<Note> = addEditNote
 

@@ -1,9 +1,12 @@
 package com.survivalcoding.noteapp.presentation.add_edit_note
 
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -62,7 +65,14 @@ class AddEditNoteFragment : Fragment() {
 
         val adapter = ColorListAdapter(
             onColorClicked = { color ->
+                val prev = viewModel.getColor()
                 viewModel.updateColor(color)
+
+                val startDrawable = ColorDrawable(ContextCompat.getColor(requireContext(), prev))
+                val endDrawable = ColorDrawable(ContextCompat.getColor(requireContext(),color))
+                val transitionDrawable = TransitionDrawable(arrayOf(startDrawable, endDrawable))
+                binding.root.background = transitionDrawable
+                transitionDrawable.startTransition(500)
             }
         )
         recyclerView.adapter = adapter
@@ -75,7 +85,7 @@ class AddEditNoteFragment : Fragment() {
         }
 
         viewModel.setRecyclerView.observe(this) {
-            adapter.setFirstValue(viewModel.getFirstColor())
+            adapter.setFirstValue(viewModel.getColor())
             adapter.submitList(viewModel.colors)
         }
 
