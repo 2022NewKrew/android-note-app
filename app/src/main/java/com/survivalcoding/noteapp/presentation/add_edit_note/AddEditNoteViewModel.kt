@@ -15,18 +15,25 @@ class AddEditNoteViewModel(
 ) : ViewModel() {
     private val _addEditNote = MutableLiveData(Note(color = R.color.orange))
     val addEditNote: LiveData<Note> get() = _addEditNote
+    private val _setRecyclerView = MutableLiveData<Int>()
+    val setRecyclerView: LiveData<Int>
+        get() = _setRecyclerView
 
     val colors = listOf(R.color.orange, R.color.yellow, R.color.purple, R.color.blue, R.color.pink)
 
     init {
-        savedStateHandle.get<Int>(MODIFY)?.let { it ->
-            viewModelScope.launch {
+        viewModelScope.launch {
+            savedStateHandle.get<Int>(MODIFY)?.let { it ->
                 notesRepository.getNoteById(it)?.let {
                     _addEditNote.value = it
                 }
             }
+            _setRecyclerView.value =
+                if (_addEditNote.value == null) R.color.orange else _addEditNote.value!!.color
         }
     }
+
+    fun getFirstColor(): Int = _addEditNote.value!!.color
 
     fun getNote(): LiveData<Note> = addEditNote
 
@@ -47,7 +54,6 @@ class AddEditNoteViewModel(
             if (it.content != content) _addEditNote.value = it.copy(content = content)
         }
     }
-
 }
 
 class AddEditNoteViewModelFactory(

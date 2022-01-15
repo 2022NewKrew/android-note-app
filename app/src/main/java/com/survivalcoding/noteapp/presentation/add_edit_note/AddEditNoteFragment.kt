@@ -66,12 +66,17 @@ class AddEditNoteFragment : Fragment() {
             }
         )
         recyclerView.adapter = adapter
-        adapter.submitList(viewModel.colors)
+
 
         viewModel.addEditNote.observe(this) {
             title.setText(it.title)
             content.setText(it.content)
             binding.root.setBackgroundResource(it.color)
+        }
+
+        viewModel.setRecyclerView.observe(this) {
+            adapter.setFirstValue(viewModel.getFirstColor())
+            adapter.submitList(viewModel.colors)
         }
 
         val saveButton = binding.saveButton
