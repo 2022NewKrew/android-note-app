@@ -4,6 +4,7 @@ import com.example.data.db.note.NoteDatabase
 import com.example.domain.entity.Note
 import com.example.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class NoteRepositoryImpl(private val db: NoteDatabase) : NoteRepository {
 

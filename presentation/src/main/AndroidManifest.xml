@@ -10,8 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NoteApp">
+        <!-- android:configChanges="orientation|screenSize" 를 붙이면 회전할 때 초기화가 안된다. -->
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>

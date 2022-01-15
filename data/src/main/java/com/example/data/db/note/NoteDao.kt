@@ -3,6 +3,7 @@ package com.example.data.db.note
 import androidx.room.*
 import com.example.domain.entity.Note
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Dao
 interface NoteDao {
