@@ -25,7 +25,6 @@ class NotesViewModel(
 ) : ViewModel() {
 
     // 우아하지 않아 보인다.
-    private val __notes: Flow<List<Note>> = getNoteAllUseCase()
     private var _notes: MutableStateFlow<List<Note>> = MutableStateFlow(listOf())
     val notes: StateFlow<List<Note>> get() = _notes
     private var tmpNote: Note? = null
@@ -33,7 +32,7 @@ class NotesViewModel(
 
     init {
         viewModelScope.launch {
-            __notes.collect {
+            getNoteAllUseCase().collect {
                 _notes.value = it
             }
         }
