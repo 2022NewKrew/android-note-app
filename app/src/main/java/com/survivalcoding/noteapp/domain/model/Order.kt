@@ -10,5 +10,10 @@ enum class Order {
 
     companion object {
         val defaultOrder get() = TITLE_ASC
+
+        fun isAsc(order: Order) = when(order) {
+            TITLE_ASC, DATE_ASC, COLOR_ASC -> true
+            else -> false
+        }
     }
 }
