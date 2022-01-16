@@ -6,9 +6,9 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.view.View
 import android.widget.RadioButton
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.survivalcoding.noteapp.databinding.ItemColorBinding
+import com.survivalcoding.noteapp.presentation.id2ColorInt
 import kotlin.math.roundToInt
 
 class ColorViewHolder(
@@ -21,13 +21,15 @@ class ColorViewHolder(
         val drawableContainerState =
             gradientDrawable.constantState as DrawableContainer.DrawableContainerState
         val children = drawableContainerState.children
+
+        val colorInt = id2ColorInt(itemView.context, color)
         val selectedItem = children[0] as GradientDrawable
-        selectedItem.setColor(ContextCompat.getColor(itemView.context, color))
+        selectedItem.setColor(colorInt)
         selectedItem.setStroke(10, Color.BLACK)
 
         val unselectedItem = children[1] as GradientDrawable
-        unselectedItem.setColor(ContextCompat.getColor(itemView.context, color))
-        unselectedItem.setStroke(10, getDarkColor(ContextCompat.getColor(itemView.context, color)))
+        unselectedItem.setColor(colorInt)
+        unselectedItem.setStroke(10, getDarkColor(colorInt))
     }
 
     private fun getDarkColor(color: Int): Int {

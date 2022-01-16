@@ -28,14 +28,14 @@
         app:layout_constraintTop_toBottomOf="@+id/titleText">
 
         <RadioGroup
-            android:id="@+id/filterRadioGroup"
+            android:id="@+id/sortByRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:checkedButton="@id/dateButton"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/sortRadioGroup"
+            app:layout_constraintBottom_toTopOf="@id/orderRadioGroup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -63,7 +63,7 @@
         </RadioGroup>
 
         <RadioGroup
-            android:id="@+id/sortRadioGroup"
+            android:id="@+id/orderRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -73,7 +73,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/filterRadioGroup">
+            app:layout_constraintTop_toBottomOf="@id/sortByRadioGroup">
 
             <RadioButton
                 android:id="@+id/ascendingButton"

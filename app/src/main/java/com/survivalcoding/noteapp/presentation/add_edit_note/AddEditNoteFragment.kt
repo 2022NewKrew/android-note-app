@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,7 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.databinding.FragmentAddEditNoteBinding
+import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.presentation.add_edit_note.adapter.ColorListAdapter
+import com.survivalcoding.noteapp.presentation.color2Id
+import com.survivalcoding.noteapp.presentation.id2ColorInt
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModel
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModelFactory
 
@@ -68,15 +70,14 @@ class AddEditNoteFragment : Fragment() {
                 val prev = viewModel.getColor()
                 viewModel.updateColor(color)
 
-                val startDrawable = ColorDrawable(ContextCompat.getColor(requireContext(), prev))
-                val endDrawable = ColorDrawable(ContextCompat.getColor(requireContext(),color))
+                val startDrawable = ColorDrawable(id2ColorInt(requireContext(), prev))
+                val endDrawable = ColorDrawable(id2ColorInt(requireContext(), color))
                 val transitionDrawable = TransitionDrawable(arrayOf(startDrawable, endDrawable))
                 binding.root.background = transitionDrawable
                 transitionDrawable.startTransition(500)
             }
         )
         recyclerView.adapter = adapter
-
 
         viewModel.addEditNote.observe(this) {
             title.setText(it.title)
@@ -86,7 +87,7 @@ class AddEditNoteFragment : Fragment() {
 
         viewModel.setRecyclerView.observe(this) {
             adapter.setFirstValue(viewModel.getColor())
-            adapter.submitList(viewModel.colors)
+            adapter.submitList(Color.values().toList().map { color -> color2Id(color) })
         }
 
         val saveButton = binding.saveButton

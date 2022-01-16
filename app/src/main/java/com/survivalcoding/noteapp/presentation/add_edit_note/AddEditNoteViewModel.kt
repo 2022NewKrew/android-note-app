@@ -3,9 +3,10 @@ package com.survivalcoding.noteapp.presentation.add_edit_note
 import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
-import com.survivalcoding.noteapp.R
+import com.survivalcoding.noteapp.domain.model.Color
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
+import com.survivalcoding.noteapp.presentation.color2Id
 import com.survivalcoding.noteapp.presentation.notes.NotesFragment.Companion.MODIFY
 import kotlinx.coroutines.launch
 
@@ -13,13 +14,12 @@ class AddEditNoteViewModel(
     savedStateHandle: SavedStateHandle,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private val _addEditNote = MutableLiveData(Note(color = R.color.orange))
+    private val _addEditNote = MutableLiveData(Note(color = color2Id(Color.defaultColor)))
     val addEditNote: LiveData<Note> get() = _addEditNote
     private val _setRecyclerView = MutableLiveData<Int>()
     val setRecyclerView: LiveData<Int>
         get() = _setRecyclerView
 
-    val colors = listOf(R.color.orange, R.color.yellow, R.color.purple, R.color.blue, R.color.pink)
 
     init {
         viewModelScope.launch {
@@ -29,7 +29,7 @@ class AddEditNoteViewModel(
                 }
             }
             _setRecyclerView.value =
-                if (_addEditNote.value == null) R.color.orange else _addEditNote.value!!.color
+                if (_addEditNote.value == null) color2Id(Color.defaultColor) else _addEditNote.value!!.color
         }
     }
 
