@@ -20,7 +20,8 @@ class NotesViewModelFactory(
                     SortByTimestampDescUseCase(repository),
                     SortByTitleAscUseCase(repository),
                     SortByTitleDescUseCase(repository),
-                )
+                ),
+                InsertNoteUseCase(repository)
             ) as T
         else throw IllegalArgumentException()
     }

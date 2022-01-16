@@ -5,6 +5,8 @@ import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.repository.NoteRepository
 
 class NoteRepositoryImpl(private val dataSource: NoteDataSource) : NoteRepository {
+    override suspend fun getNoteById(id: Int): Note = dataSource.getNoteById(id)
+
     override suspend fun insertNote(note: Note) = dataSource.insertNote(note)
 
     override suspend fun deleteNote(note: Note) = dataSource.deleteNote(note)

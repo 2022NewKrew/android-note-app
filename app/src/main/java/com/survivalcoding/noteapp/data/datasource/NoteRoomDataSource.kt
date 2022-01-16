@@ -2,7 +2,9 @@ package com.survivalcoding.noteapp.data.datasource
 
 import com.survivalcoding.noteapp.domain.model.Note
 
-class NoteRoomDataSource(private val dao: NoteDao): NoteDataSource {
+class NoteRoomDataSource(private val dao: NoteDao) : NoteDataSource {
+    override suspend fun getNoteById(id: Int): Note = dao.getNoteById(id)
+
     override suspend fun insertNote(note: Note) = dao.insertNote(note)
 
     override suspend fun deleteNote(note: Note) = dao.deleteNote(note)

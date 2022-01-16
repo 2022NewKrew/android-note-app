@@ -34,6 +34,22 @@ class AddEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (arguments?.get("noteId") as Int?)?.run { viewModel.getNoteById(this) }
+
+        // 기존 노트 정보 표시
+        viewModel.note.observe(this) { note ->
+            binding.addEditEtTitle.setText(note.title)
+            binding.addEditEtContent.setText(note.content)
+
+            when (note.color) {
+                Color.ORANGE.resId() -> viewModel.changeColor(Color.ORANGE)
+                Color.YELLOW.resId() -> viewModel.changeColor(Color.YELLOW)
+                Color.PURPLE.resId() -> viewModel.changeColor(Color.PURPLE)
+                Color.BLUE.resId() -> viewModel.changeColor(Color.BLUE)
+                Color.PINK.resId() -> viewModel.changeColor(Color.PINK)
+            }
+        }
+
         binding.addEditIvOrange.setOnClickListener { viewModel.changeColor(Color.ORANGE) }
         binding.addEditIvYellow.setOnClickListener { viewModel.changeColor(Color.YELLOW) }
         binding.addEditIvPurple.setOnClickListener { viewModel.changeColor(Color.PURPLE) }
@@ -55,15 +71,7 @@ class AddEditFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
                 else -> {
-                    viewModel.insertNote(
-                        Note(
-                            null,
-                            title,
-                            content,
-                            Date().time,
-                            (viewModel.color.value ?: Color.ORANGE).resId()
-                        )
-                    )
+                    viewModel.insertNote(title, content, Date().time)
                     parentFragmentManager.popBackStack()
                 }
             }
