@@ -1,5 +1,8 @@
 package com.survivalcoding.noteapp.notes.adapter
 
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -17,14 +20,12 @@ class NoteViewHolder(private val binding: ItemNoteBinding) : ViewHolder(binding.
         ) {
         binding.noteTitleView.text = item.title
         binding.noteContentView.text = item.content
-        binding.cardView.setBackgroundColor(item.color)
-        /* 날짜 지정
-        val pattern = "yyyy-MM-dd HH:mm:ss"
-        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-        val date = "set : " + formatter.format(item.timestamp)
-        binding.deadlineTextview.text = date
-         */
-        binding.root.setOnLongClickListener() {
+
+        val background = binding.root.background  as LayerDrawable
+        val rectangleFrame =  background.findDrawableByLayerId(R.id.rectangle_frame) as GradientDrawable
+        rectangleFrame.setColor(item.color)
+
+        binding.root.setOnLongClickListener {
             onLongClicked(item)
             true
         }

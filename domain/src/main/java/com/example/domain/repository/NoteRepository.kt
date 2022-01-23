@@ -2,6 +2,7 @@ package com.example.domain.repository
 
 import com.example.domain.entity.Note
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 interface NoteRepository {
     fun getNotes(): Flow<List<Note>>

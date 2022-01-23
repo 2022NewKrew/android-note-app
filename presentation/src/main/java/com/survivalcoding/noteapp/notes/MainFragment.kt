@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.survivalcoding.noteapp.App
 import com.survivalcoding.noteapp.MainActivity
 import com.survivalcoding.noteapp.R
@@ -20,13 +20,13 @@ import com.survivalcoding.noteapp.notes.adapter.NoteListAdapter
 import com.survivalcoding.noteapp.notes.adapter.NoteSwipeHandler
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModel
 import com.survivalcoding.noteapp.presentation.notes.NotesViewModelFactory
-import com.google.android.material.snackbar.Snackbar
 
 
 class MainFragment : Fragment() {
 
+    private var _binding: MainFragmentBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: NotesViewModel
-    private lateinit var binding: MainFragmentBinding
     private var SORTED_WITH = "TIME"
     private var ASC_OR_DESC = "ASC"
 
@@ -34,7 +34,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = MainFragmentBinding.inflate(layoutInflater)
+        _binding = MainFragmentBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -46,12 +46,6 @@ class MainFragment : Fragment() {
             )
         ).get(NotesViewModel::class.java)
 
-        // snakbar setting
-        val snackBar = Snackbar.make(
-            binding.root,
-            "cancel delete",
-            Snackbar.LENGTH_SHORT
-        )
         val adapter = NoteListAdapter(
             onLongClicked = { note ->
                 setFragmentResult(MainActivity.FRAGMENT_KEY, bundleOf("note" to note))
@@ -60,23 +54,30 @@ class MainFragment : Fragment() {
                     addToBackStack(null)
                 }
             },
-            onLeftSwiped = { note ->
-                // delete confirm
-                snackBar.addCallback(object : Snackbar.Callback() {
+            onLeftSwiped = { position, note ->
+                viewModel.eventListener(
+                    MainEvent.SwipeDeleteEvent(
+                        position,
+                        note
+                    )
+                ) // delete temporary
+                Snackbar.make(
+                    binding.root,
+                    "cancel delete",
+                    Snackbar.LENGTH_SHORT
+                ).setAction("cancel") {
+                    viewModel.unDoDelete()
+                }.addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
+                        println("$event $DISMISS_EVENT_ACTION")
                         if (event != DISMISS_EVENT_ACTION) {
-                            viewModel.deleteNote(note)
+                            viewModel.deleteNote()
                         }
                     }
-                })
-                snackBar.show()
+                }).show()
             }
         )
-
-        snackBar.setAction("cancel") {
-            adapter.unDoDelete()
-        }
 
         binding.noteListView.layoutManager = LinearLayoutManager(requireContext())
         binding.noteListView.adapter = adapter
@@ -100,39 +101,25 @@ class MainFragment : Fragment() {
         // sorting
         binding.contentSortGroupView.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.time_sorting -> {
-                    SORTED_WITH = "TIME"
-                    adapter.sorting(SORTED_WITH, ASC_OR_DESC)
-                }
-                R.id.title_sorting -> {
-                    SORTED_WITH = "TITLE"
-                    adapter.sorting(SORTED_WITH, ASC_OR_DESC)
-
-                }
-                R.id.color_sorting -> {
-                    SORTED_WITH = "COLOR"
-                    adapter.sorting(SORTED_WITH, ASC_OR_DESC)
-                }
+                R.id.time_sorting -> SORTED_WITH = "TIME"
+                R.id.title_sorting -> SORTED_WITH = "TITLE"
+                R.id.color_sorting -> SORTED_WITH = "COLOR"
             }
+            viewModel.eventListener(MainEvent.SortingEvent(SORTED_WITH, ASC_OR_DESC))
         }
 
         binding.orderSortGroupView.setOnCheckedChangeListener { _, checkId ->
             when (checkId) {
-                R.id.ascending -> {
-                    ASC_OR_DESC = "ASC"
-                    adapter.sorting(SORTED_WITH, ASC_OR_DESC)
-                }
-                R.id.descending -> {
-                    ASC_OR_DESC = "DESC"
-                    adapter.sorting(SORTED_WITH, ASC_OR_DESC)
-                }
-
+                R.id.ascending -> ASC_OR_DESC = "ASC"
+                R.id.descending -> ASC_OR_DESC = "DESC"
             }
+            viewModel.eventListener(MainEvent.SortingEvent(SORTED_WITH, ASC_OR_DESC))
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        println("Destroy")
+        // memory leak을 까먹지 말자
+        _binding = null
     }
 }
