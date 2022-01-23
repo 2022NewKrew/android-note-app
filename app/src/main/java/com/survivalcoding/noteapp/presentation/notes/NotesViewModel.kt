@@ -4,46 +4,45 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.domain.model.Note
+import com.survivalcoding.noteapp.domain.model.Order
+import com.survivalcoding.noteapp.domain.model.SortBy
 import com.survivalcoding.noteapp.domain.repository.NotesRepository
-import com.survivalcoding.noteapp.domain.usecase.SortNotesUseCase
+import com.survivalcoding.noteapp.domain.usecase.GetSortedNotesUseCase
+import com.survivalcoding.noteapp.presentation.id2Order
+import com.survivalcoding.noteapp.presentation.id2SortBy
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class NotesViewModel(
     application: Application,
     private val notesRepository: NotesRepository,
-    private val sortNotesUseCase: SortNotesUseCase,
+    private val getSortedNotesUseCase: GetSortedNotesUseCase,
 ) : AndroidViewModel(application) {
     private var _notes = MutableLiveData<List<Note>>()
-    private var _filter = MutableLiveData<Int>()
-    private var _sort = MutableLiveData<Int>()
+    private var _sortBy = MutableLiveData<SortBy>()
+    private var _order = MutableLiveData<Order>()
 
     init {
         viewModelScope.launch {
-            _notes.value = sortNotesUseCase.invoke(
-                getValueFromFilterId(R.id.dateButton),
-                getValueFromSortId(R.id.descendingButton)
+            _notes.value = getSortedNotesUseCase.invoke(
+                id2SortBy(R.id.dateButton),
+                id2Order(R.id.descendingButton)
             )
-            _filter.value = R.id.dateButton
-            _sort.value = R.id.descendingButton
+            _sortBy.value = id2SortBy(R.id.dateButton)
+            _order.value = id2Order(R.id.descendingButton)
         }
     }
 
-    //UiState를 굳이 LiveData에서 사용하고 싶다면 이게 베스트, 이걸 LiveData 만을 이용해 할 수 있는 방법은??
     val uiState: LiveData<NotesUiState> =
-        combine(_notes.asFlow(), _filter.asFlow(), _sort.asFlow()) { notes, filter, sort ->
-            NotesUiState(notes, filter, sort)
+        combine(_notes.asFlow(), _sortBy.asFlow(), _order.asFlow()) { notes, sortBy, order ->
+            NotesUiState(notes, sortBy, order)
         }.asLiveData()
-
-
-    suspend fun getNoteById(id: Int): Note? = notesRepository.getNoteById(id)
 
     fun insertNote(note: Note) {
         viewModelScope.launch {
             notesRepository.insertNote(note)
-            _notes.value = sortNotesUseCase.invoke(
-                getValueFromFilterId(_filter.value!!),
-                getValueFromSortId(_sort.value!!)
+            _notes.value = getSortedNotesUseCase.invoke(
+                _sortBy.value!!, _order.value!!
             )
         }
     }
@@ -51,45 +50,26 @@ class NotesViewModel(
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             notesRepository.deleteNote(note)
-            _notes.value = sortNotesUseCase.invoke(
-                getValueFromFilterId(_filter.value!!),
-                getValueFromSortId(_sort.value!!)
+            _notes.value = getSortedNotesUseCase.invoke(
+                _sortBy.value!!, _order.value!!
             )
         }
     }
 
-    fun updateFilter(filter: Int) {
-        _filter.value = filter
+    fun updateFilter(id: Int) {
+        _sortBy.value = id2SortBy(id)
     }
 
-    fun updateSort(sort: Int) {
-        _sort.value = sort
+    fun updateSort(id: Int) {
+        _order.value = id2Order(id)
     }
 
     fun sortNotes() {
         viewModelScope.launch {
-            _notes.value = sortNotesUseCase.invoke(
-                getValueFromFilterId(_filter.value!!),
-                getValueFromSortId(_sort.value!!)
+            _notes.value = getSortedNotesUseCase.invoke(
+                _sortBy.value!!, _order.value!!
             )
         }
-    }
-}
-
-private fun getValueFromSortId(checkedId: Int): Int {
-    return when (checkedId) {
-        R.id.ascendingButton -> SortNotesUseCase.SORT_ASC
-        R.id.descendingButton -> SortNotesUseCase.SORT_DESC
-        else -> -1
-    }
-}
-
-private fun getValueFromFilterId(checkedId: Int): Int {
-    return when (checkedId) {
-        R.id.titleButton -> SortNotesUseCase.BY_TITLE
-        R.id.dateButton -> SortNotesUseCase.BY_DATE
-        R.id.colorButton -> SortNotesUseCase.BY_COLOR
-        else -> -1
     }
 }
 
@@ -102,7 +82,7 @@ class NotesViewModelFactory(
             return NotesViewModel(
                 application = application,
                 notesRepository = notesRepository,
-                sortNotesUseCase = SortNotesUseCase(notesRepository)
+                getSortedNotesUseCase = GetSortedNotesUseCase(notesRepository)
             ) as T
         else throw IllegalArgumentException()
     }

@@ -16,6 +16,8 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.presentation.add_edit_note.AddEditNoteFragment
 import com.survivalcoding.noteapp.presentation.notes.adapter.NoteListAdapter
+import com.survivalcoding.noteapp.presentation.order2Id
+import com.survivalcoding.noteapp.presentation.sortBy2Id
 
 
 class NotesFragment : Fragment() {
@@ -59,22 +61,22 @@ class NotesFragment : Fragment() {
             else filterLayout.visibility = VISIBLE
         }
 
-        val filterRadioGroup = binding.filterRadioGroup
-        val sortRadioGroup = binding.sortRadioGroup
+        val sortByRadioGroup = binding.sortByRadioGroup
+        val orderRadioGroup = binding.orderRadioGroup
 
-        filterRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+        sortByRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             viewModel.updateFilter(checkedId)
             viewModel.sortNotes()
         }
-        sortRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+        orderRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             viewModel.updateSort(checkedId)
             viewModel.sortNotes()
         }
 
         viewModel.uiState.observe(this) {
             adapter.submitList(it.notes)
-            filterRadioGroup.check(it.filter)
-            sortRadioGroup.check(it.sort)
+            sortByRadioGroup.check(sortBy2Id(it.sortBy))
+            orderRadioGroup.check(order2Id(it.order))
         }
 
         val addButton = binding.addButton

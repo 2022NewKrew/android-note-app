@@ -8,13 +8,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/colorRecyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="5" />
+        tools:itemCount="5"
+        tools:listitem="@layout/item_color" />
 
     <EditText
         android:id="@+id/titleEditText"
