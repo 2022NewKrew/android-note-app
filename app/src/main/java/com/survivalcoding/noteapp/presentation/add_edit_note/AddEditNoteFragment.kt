@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -16,8 +15,10 @@ import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentAddEditNoteBinding
 import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.domain.model.NoteColor
+import com.survivalcoding.noteapp.presentation.add_edit_note.adapter.ColorListAdapter
 import com.survivalcoding.noteapp.presentation.notes.NotesFragment
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class AddEditNoteFragment : Fragment() {
@@ -27,6 +28,14 @@ class AddEditNoteFragment : Fragment() {
 
     private val viewModel by activityViewModels<AddEditNoteViewModel> {
         AddEditNoteViewModelFactory((requireActivity().application as App).noteRepository)
+    }
+
+    private val adapter by lazy {
+        ColorListAdapter(
+            itemClickEvent = {
+                viewModel.onEvent(idToSetColorEvent(it.id))
+            }
+        )
     }
 
     override fun onCreateView(
@@ -42,66 +51,63 @@ class AddEditNoteFragment : Fragment() {
 
         setNote()
 
-        binding.rgSelectColor.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.setColor(
-                when (checkedId) {
-                    binding.rbColor1.id -> NoteColor.COLOR_1
-                    binding.rbColor2.id -> NoteColor.COLOR_2
-                    binding.rbColor3.id -> NoteColor.COLOR_3
-                    binding.rbColor4.id -> NoteColor.COLOR_4
-                    binding.rbColor5.id -> NoteColor.COLOR_5
-                    else -> NoteColor.COLOR_1
-                }
-            )
-        }
+        binding.rvSelectColor.adapter = adapter
 
         binding.fabSaveNoteButton.setOnClickListener {
             val title = binding.etTitleInput.text.toString()
             val content = binding.etContentInput.text.toString()
 
-            val errorMessage = when {
-                title.isEmpty() -> "제목을 입력해 주세요."
-                content.isEmpty() -> "내용을 입력해 주세요."
-                else -> ""
+            viewModel.onEvent(AddEditNoteEvent.SetTitle(title))
+            viewModel.onEvent(AddEditNoteEvent.SetContent(content))
+            viewModel.onEvent(AddEditNoteEvent.InsertNote)
+
+            parentFragmentManager.commit {
+                replace(R.id.fragmentContainerView, NotesFragment())
+                setReorderingAllowed(true)
             }
 
-            if (errorMessage.isNotEmpty()) {
-                with(requireActivity()) {
-                    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                viewModel.setTitle(title)
-                viewModel.setContent(content)
-
-                viewModel.insert()
-
-                parentFragmentManager.commit {
-                    replace(R.id.fragmentContainerView, NotesFragment())
-                    setReorderingAllowed(true)
-                }
-            }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.noteState.collect {
-                    binding.clAddEditBackground.setBackgroundColor(it.color.toInt())
-                    binding.etTitleInput.setText(it.title)
-                    binding.etContentInput.setText(it.content)
-                    binding.rgSelectColor.check(it.color.toId())
-                }
+        collect()
+    }
+
+    private fun collect() {
+        repeatOnStart {
+            viewModel.noteState.collectLatest {
+                binding.clAddEditBackground.setBackgroundColor(it.color.toInt())
+                binding.etTitleInput.setText(it.title)
+                binding.etContentInput.setText(it.content)
+                adapter.submitList(it.backgroundColor)
             }
         }
+    }
+
+    private fun repeatOnStart(block: suspend CoroutineScope.() -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED, block)
+        }
+    }
+
+    private fun idToSetColorEvent(id: Long?): AddEditNoteEvent.SetColor {
+        val color = when (id) {
+            0L -> NoteColor.COLOR_1
+            1L -> NoteColor.COLOR_2
+            2L -> NoteColor.COLOR_3
+            3L -> NoteColor.COLOR_4
+            4L -> NoteColor.COLOR_5
+            else -> NoteColor.COLOR_1
+        }
+        return AddEditNoteEvent.SetColor(color)
     }
 
     private fun setNote() {
         arguments?.let {
             val note = it.getParcelable(NotesFragment.NOTE_KEY) ?: Note()
 
-            viewModel.setId(note.id)
-            viewModel.setTitle(note.title)
-            viewModel.setContent(note.content)
-            viewModel.setColor(note.color)
+            viewModel.onEvent(AddEditNoteEvent.SetId(note.id))
+            viewModel.onEvent(AddEditNoteEvent.SetTitle(note.title))
+            viewModel.onEvent(AddEditNoteEvent.SetContent(note.content))
+            viewModel.onEvent(AddEditNoteEvent.SetColor(note.color))
         }
     }
 }
