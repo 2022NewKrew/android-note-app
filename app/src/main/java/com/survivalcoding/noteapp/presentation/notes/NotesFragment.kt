@@ -3,6 +3,7 @@ package com.survivalcoding.noteapp.presentation.notes
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,10 +16,11 @@ import com.survivalcoding.noteapp.NoteApplication
 import com.survivalcoding.noteapp.R
 import com.survivalcoding.noteapp.databinding.FragmentNotesBinding
 import com.survivalcoding.noteapp.domain.NoteOrderBy
+import com.survivalcoding.noteapp.domain.model.Note
 import com.survivalcoding.noteapp.presentation.AppViewModelFactory
 import com.survivalcoding.noteapp.presentation.notes.adapter.NotesAdapter
-import com.survivalcoding.noteapp.toggleVisibility
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class NotesFragment : Fragment() {
@@ -57,7 +59,7 @@ class NotesFragment : Fragment() {
         }
 
         val notesAdapter = NotesAdapter({
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToNoteFragment(it.id!!))
+            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToNoteFragment(it))
         }, { note ->
             viewModel.deleteNote(note)
             Snackbar.make(binding.root, "Note Deleted", Snackbar.LENGTH_SHORT).apply {
@@ -79,12 +81,14 @@ class NotesFragment : Fragment() {
         binding.notesRv.adapter = notesAdapter
 
         binding.addFab.setOnClickListener {
-            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToNoteFragment(0))
+            findNavController().navigate(NotesFragmentDirections.actionNotesFragmentToNoteFragment(
+                Note()
+            ))
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
+                viewModel.uiState.collectLatest {
                     notesAdapter.submitList(it.notes)
                     binding.orderByRg.check(it.orderBy.toId())
                     binding.isAscRg.check(if(it.isAsc) R.id.isAscTrueRb else R.id.isAscFalseRb)
@@ -101,7 +105,7 @@ class NotesFragment : Fragment() {
         when(item.itemId) {
             R.id.notesSort -> {
                 TransitionManager.beginDelayedTransition(binding.root)
-                binding.sortLl.toggleVisibility()
+                binding.sortLl.isVisible = !binding.sortLl.isVisible
             }
         }
 

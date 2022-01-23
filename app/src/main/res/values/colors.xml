@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_salmon">#ffab91</color>
+    <color name="primrose">#e7ed9b</color>
+    <color name="pastel_violet">#cf94da</color>
+    <color name="aquamarine_blue">#81deea</color>
+    <color name="pink_sherbet">#f48fb1</color>
+    <color name="note_corner_lightness">#c9c9c9</color>
+    <color name="main_background">#202020</color>
 </resources>

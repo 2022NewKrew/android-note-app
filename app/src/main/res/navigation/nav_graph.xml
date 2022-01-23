@@ -20,7 +20,7 @@
         android:label="fragment_note"
         tools:layout="@layout/fragment_note" >
         <argument
-            android:name="noteId"
-            app:argType="integer" />
+            android:name="note"
+            app:argType="com.survivalcoding.noteapp.domain.model.Note" />
     </fragment>
 </navigation>

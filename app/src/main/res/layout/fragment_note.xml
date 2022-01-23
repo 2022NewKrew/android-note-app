@@ -7,8 +7,8 @@
     tools:context=".presentation.notes.NotesFragment"
     android:padding="16dp">
 
-    <LinearLayout
-        android:id="@+id/colorsLl"
+    <RadioGroup
+        android:id="@+id/colorsRg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -16,54 +16,59 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="horizontal"
         android:paddingBottom="16dp">
-        <Button
+        <com.survivalcoding.noteapp.presentation.ColorRadioButton
+            android:id="@+id/lightSalmonCrb"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:padding="12dp"
-            android:background="@drawable/selector_circle"/>
+            app:colorValue="@color/light_salmon"/>
         <Space
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
-        <Button
+        <com.survivalcoding.noteapp.presentation.ColorRadioButton
+            android:id="@+id/primroseCrb"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:padding="12dp"
-            android:background="@drawable/selector_circle"/>
+            app:colorValue="@color/primrose"/>
         <Space
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
-        <Button
+        <com.survivalcoding.noteapp.presentation.ColorRadioButton
+            android:id="@+id/pastelVioletCrb"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:padding="12dp"
-            android:background="@drawable/selector_circle"/>
+            app:colorValue="@color/pastel_violet"/>
         <Space
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
-        <Button
+        <com.survivalcoding.noteapp.presentation.ColorRadioButton
+            android:id="@+id/aquamarineBlueCrb"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:padding="12dp"
-            android:background="@drawable/selector_circle"/>
+            app:colorValue="@color/aquamarine_blue"/>
         <Space
             android:layout_width="0dp"
-            android:layout_height="1dp"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
-        <Button
+        <com.survivalcoding.noteapp.presentation.ColorRadioButton
+            android:id="@+id/pinkSherbetCrb"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:padding="12dp"
-            android:background="@drawable/selector_circle"/>
-    </LinearLayout>
+            app:colorValue="@color/pink_sherbet"/>
+    </RadioGroup>
 
     <EditText
-        android:id="@+id/titleTv"
+        android:id="@+id/titleEv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/colorsLl"
+        app:layout_constraintTop_toBottomOf="@id/colorsRg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="24sp"
@@ -71,10 +76,10 @@
         android:hint="Title" />
 
     <EditText
-        android:id="@+id/contentTv"
+        android:id="@+id/contentEv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/titleTv"
+        app:layout_constraintTop_toBottomOf="@id/titleEv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
